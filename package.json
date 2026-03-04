@@ -1,0 +1,31 @@
+{
+  "name": "elysia-vue-query",
+  "private": true,
+  "type": "module",
+  "author": "Saku Shiina <shiinasaku@proton.me>",
+  "license": "MIT",
+  "workspaces": [
+    "packages/*",
+    "playground/*",
+    "docs"
+  ],
+  "scripts": {
+    "build": "bun run --filter './packages/*' build",
+    "build:core": "bun run --filter @elysia-vue-query/core build",
+    "build:vue": "bun run --filter @elysia-vue-query/vue build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit -p packages/core/tsconfig.json && tsc --noEmit -p packages/vue/tsconfig.json",
+    "playground:api": "bun run --filter @playground/api dev",
+    "playground:vue": "bun run --filter @playground/vue-app dev",
+    "docs:dev": "bun run --filter @elysia-vue-query/docs dev",
+    "docs:build": "bun run --filter @elysia-vue-query/docs build",
+    "docs:preview": "bun run --filter @elysia-vue-query/docs preview"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18",
+    "tsdown": "^0.20.3"
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "name": "@elysia-vue-query/vue",
+  "version": "0.1.0",
+  "type": "module",
+  "author": "Saku Shiina <shiinasaku@proton.me>",
+  "license": "MIT",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch"
+  },
+  "dependencies": {
+    "@elysia-vue-query/core": "workspace:*"
+  },
+  "peerDependencies": {
+    "@tanstack/vue-query": ">=5.0.0",
+    "vue": ">=3.5.0"
+  },
+  "devDependencies": {
+    "@tanstack/vue-query": "^5.92.9",
+    "vue": "^3.5.29",
+    "tsdown": "^0.20.3",
+    "typescript": "^5.9.3"
+  }
+}
