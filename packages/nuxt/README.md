@@ -2,8 +2,8 @@
 
 Nuxt module for elysia-vue-query with SSR dehydration and hydration.
 
-[![npm](https://img.shields.io/npm/v/@elysia-vue-query/nuxt?style=flat-square)](https://www.npmjs.com/package/@elysia-vue-query/nuxt)
-[![License](https://img.shields.io/github/license/elysia-vue-query/elysia-vue-query?style=flat-square)](https://opensource.org/licenses/MIT)
+[![Version](https://npmx.dev/api/registry/badge/version/@elysia-vue-query/nuxt?labelColor=030712&color=f06292)](https://npmx.dev/package/@elysia-vue-query/nuxt)
+[![License](https://npmx.dev/api/registry/badge/license/@elysia-vue-query/nuxt?labelColor=030712&color=4ade80)](https://npmx.dev/package/@elysia-vue-query/nuxt)
 [![Nuxt](https://img.shields.io/badge/Nuxt-020420?style=flat-square&logo=nuxt)](https://nuxt.com)
 
 ---

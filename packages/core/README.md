@@ -2,8 +2,9 @@
 
 Framework-agnostic primitives for bridging Eden Treaty with TanStack Query.
 
-[![npm](https://img.shields.io/npm/v/@elysia-vue-query/core?style=flat-square)](https://www.npmjs.com/package/@elysia-vue-query/core)
-[![License](https://img.shields.io/github/license/elysia-vue-query/elysia-vue-query?style=flat-square)](https://opensource.org/licenses/MIT)
+[![Version](https://npmx.dev/api/registry/badge/version/@elysia-vue-query/core?labelColor=030712&color=f06292)](https://npmx.dev/package/@elysia-vue-query/core)
+[![License](https://npmx.dev/api/registry/badge/license/@elysia-vue-query/core?labelColor=030712&color=4ade80)](https://npmx.dev/package/@elysia-vue-query/core)
+[![Types](https://npmx.dev/api/registry/badge/types/@elysia-vue-query/core?labelColor=030712&color=3b82f6)](https://npmx.dev/package/@elysia-vue-query/core)
 
 ---
 

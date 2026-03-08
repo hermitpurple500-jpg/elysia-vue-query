@@ -2,8 +2,9 @@
 
 Vue 3 bindings for elysia-vue-query -- type-safe TanStack Query integration with Elysia Eden Treaty.
 
-[![npm](https://img.shields.io/npm/v/@elysia-vue-query/vue?style=flat-square)](https://www.npmjs.com/package/@elysia-vue-query/vue)
-[![License](https://img.shields.io/github/license/elysia-vue-query/elysia-vue-query?style=flat-square)](https://opensource.org/licenses/MIT)
+[![Version](https://npmx.dev/api/registry/badge/version/@elysia-vue-query/vue?labelColor=030712&color=f06292)](https://npmx.dev/package/@elysia-vue-query/vue)
+[![License](https://npmx.dev/api/registry/badge/license/@elysia-vue-query/vue?labelColor=030712&color=4ade80)](https://npmx.dev/package/@elysia-vue-query/vue)
+[![Downloads](https://npmx.dev/api/registry/badge/downloads/@elysia-vue-query/vue?labelColor=030712&color=f06292)](https://npmx.dev/package/@elysia-vue-query/vue)
 
 ---
 

@@ -8,12 +8,12 @@
 
   <br /><br />
 
-  [![NPM Version](https://img.shields.io/npm/v/@elysia-vue-query/vue.svg?style=flat-square&colorA=030712&colorB=f06292)](https://www.npmjs.com/package/@elysia-vue-query/vue)
-  [![NPM Downloads](https://img.shields.io/npm/dm/@elysia-vue-query/vue.svg?style=flat-square&colorA=030712&colorB=f06292)](https://www.npmjs.com/package/@elysia-vue-query/vue)
-  [![Bundle Size](https://img.shields.io/bundlephobia/minzip/@elysia-vue-query/vue.svg?style=flat-square&colorA=030712&colorB=a855f7)](https://bundlephobia.com/package/@elysia-vue-query/vue)
-  [![License](https://img.shields.io/npm/l/@elysia-vue-query/vue.svg?style=flat-square&colorA=030712&colorB=4ade80)](LICENSE)
-  [![CI](https://img.shields.io/github/actions/workflow/status/shiina/elysia-vue-query/ci.yml?style=flat-square&colorA=030712&label=CI)](https://github.com/shiina/elysia-vue-query/actions)
-  [![Provenance](https://img.shields.io/badge/provenance-verified-f06292?style=flat-square&colorA=030712)](https://docs.npmjs.com/generating-provenance-statements)
+  [![Version](https://npmx.dev/api/registry/badge/version/@elysia-vue-query/vue?labelColor=030712&color=f06292)](https://npmx.dev/package/@elysia-vue-query/vue)
+  [![Downloads](https://npmx.dev/api/registry/badge/downloads/@elysia-vue-query/vue?labelColor=030712&color=f06292)](https://npmx.dev/package/@elysia-vue-query/vue)
+  [![Size](https://npmx.dev/api/registry/badge/size/@elysia-vue-query/vue?labelColor=030712&color=a855f7)](https://npmx.dev/package/@elysia-vue-query/vue)
+  [![License](https://npmx.dev/api/registry/badge/license/@elysia-vue-query/vue?labelColor=030712&color=4ade80)](https://npmx.dev/package/@elysia-vue-query/vue)
+  [![CI](https://img.shields.io/github/actions/workflow/status/elysia-vue-query/elysia-vue-query/ci.yml?style=flat-square&colorA=030712&label=CI)](https://github.com/elysia-vue-query/elysia-vue-query/actions)
+  [![Types](https://npmx.dev/api/registry/badge/types/@elysia-vue-query/vue?labelColor=030712&color=3b82f6)](https://npmx.dev/package/@elysia-vue-query/vue)
 </div>
 
 ---
@@ -32,9 +32,9 @@ It wraps your Eden client once. Everything else — `useQuery`, `useMutation`, q
 
 | Package | Description | Version |
 |---|---|---|
-| [`@elysia-vue-query/core`](packages/core) | Proxy engine, key builders, serialization | [![npm](https://img.shields.io/npm/v/@elysia-vue-query/core.svg?style=flat-square&colorA=030712&colorB=f06292)](https://www.npmjs.com/package/@elysia-vue-query/core) |
-| [`@elysia-vue-query/vue`](packages/vue) | Vue 3 composables — `useQuery`, `useMutation`, `prefetch` | [![npm](https://img.shields.io/npm/v/@elysia-vue-query/vue.svg?style=flat-square&colorA=030712&colorB=f06292)](https://www.npmjs.com/package/@elysia-vue-query/vue) |
-| [`@elysia-vue-query/nuxt`](packages/nuxt) | Nuxt module — SSR dehydration + client hydration | [![npm](https://img.shields.io/npm/v/@elysia-vue-query/nuxt.svg?style=flat-square&colorA=030712&colorB=f06292)](https://www.npmjs.com/package/@elysia-vue-query/nuxt) |
+| [`@elysia-vue-query/core`](packages/core) | Proxy engine, key builders, serialization | [![npm](https://npmx.dev/api/registry/badge/version/@elysia-vue-query/core?labelColor=030712&color=f06292&name=true)](https://npmx.dev/package/@elysia-vue-query/core) |
+| [`@elysia-vue-query/vue`](packages/vue) | Vue 3 composables — `useQuery`, `useMutation`, `prefetch` | [![npm](https://npmx.dev/api/registry/badge/version/@elysia-vue-query/vue?labelColor=030712&color=f06292&name=true)](https://npmx.dev/package/@elysia-vue-query/vue) |
+| [`@elysia-vue-query/nuxt`](packages/nuxt) | Nuxt module — SSR dehydration + client hydration | [![npm](https://npmx.dev/api/registry/badge/version/@elysia-vue-query/nuxt?labelColor=030712&color=f06292&name=true)](https://npmx.dev/package/@elysia-vue-query/nuxt) |
 
 ---
 
