@@ -116,8 +116,8 @@ export default defineConfig({
     },
 
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/shiina/elysia-vue-query' },
-      { icon: 'npm', link: 'https://www.npmjs.com/package/@elysia-vue-query/' },
+      { icon: 'github', link: 'https://github.com/elysia-vue-query/elysia-vue-query' },
+      { icon: 'npm', link: 'https://npmx.dev/org/elysia-vue-query' },
     ],
 
     search: {
@@ -125,7 +125,7 @@ export default defineConfig({
     },
 
     editLink: {
-      pattern: 'https://github.com/shiina/elysia-vue-query/edit/main/docs/:path',
+      pattern: 'https://github.com/elysia-vue-query/elysia-vue-query/edit/main/docs/:path',
       text: 'Suggest changes to this page',
     },
 
