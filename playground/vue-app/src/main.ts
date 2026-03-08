@@ -1,9 +1,9 @@
-import { createApp } from 'vue'
-import { VueQueryPlugin } from '@tanstack/vue-query'
-import App from './App.vue'
-import './style.css'
+import { createApp } from "vue";
+import { VueQueryPlugin } from "@tanstack/vue-query";
+import App from "./App.vue";
+import "./style.css";
 
-const app = createApp(App)
+const app = createApp(App);
 
 app.use(VueQueryPlugin, {
   queryClientConfig: {
@@ -14,6 +14,6 @@ app.use(VueQueryPlugin, {
       },
     },
   },
-})
+});
 
-app.mount('#app')
+app.mount("#app");

@@ -1,14 +1,14 @@
 {
   "name": "elysia-vue-query",
   "private": true,
-  "type": "module",
-  "author": "Saku Shiina <shiinasaku@proton.me>",
   "license": "MIT",
+  "author": "Saku Shiina <shiinasaku@proton.me>",
   "workspaces": [
     "packages/*",
     "playground/*",
     "docs"
   ],
+  "type": "module",
   "scripts": {
     "build": "bun run --filter './packages/*' build",
     "build:core": "bun run --filter @elysia-vue-query/core build",

@@ -5,14 +5,14 @@ TanStack Query caches by key. `elysia-vue-query` generates those keys from the r
 ## Basic shape
 
 ```ts
-eden.proxy.users.get
+eden.proxy.users.get;
 // => [EDEN_ROUTE_SYMBOL, 'users', 'get']
 ```
 
 When params are present, they are inserted before the method:
 
 ```ts
-eden.proxy.users.get({ page: 1, limit: 20 })
+eden.proxy.users.get({ page: 1, limit: 20 });
 // => [EDEN_ROUTE_SYMBOL, 'users', { limit: 20, page: 1 }, 'get']
 ```
 
@@ -26,7 +26,7 @@ eden.proxy.users.get({ page: 1, limit: 20 })
 ## Nested routes
 
 ```ts
-eden.proxy.users.posts.comments.get
+eden.proxy.users.posts.comments.get;
 // => [EDEN_ROUTE_SYMBOL, 'users', 'posts', 'comments', 'get']
 ```
 
@@ -35,10 +35,10 @@ eden.proxy.users.posts.comments.get
 Use `getKey()` when you need to talk to `queryClient` directly.
 
 ```ts
-const key = eden.getKey(eden.proxy.users.get)
+const key = eden.getKey(eden.proxy.users.get);
 
-queryClient.getQueryData(key)
-queryClient.setQueryData(key, newData)
+queryClient.getQueryData(key);
+queryClient.setQueryData(key, newData);
 ```
 
 ## Prefix keys
@@ -46,11 +46,11 @@ queryClient.setQueryData(key, newData)
 For subtree invalidation or other prefix-matching operations, use `buildPartialKey()` from core.
 
 ```ts
-import { buildPartialKey } from '@elysia-vue-query/core'
+import { buildPartialKey } from "@elysia-vue-query/core";
 
 queryClient.invalidateQueries({
-  queryKey: buildPartialKey('users'),
-})
+  queryKey: buildPartialKey("users"),
+});
 ```
 
 ## Related guides

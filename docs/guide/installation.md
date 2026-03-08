@@ -52,12 +52,12 @@ yarn add @elysia-vue-query/nuxt
 
 ## Compatibility
 
-| Package | Version |
-| --- | --- |
-| `vue` | `>= 3.5` |
-| `@tanstack/vue-query` | `>= 5` |
-| `@elysiajs/eden` | `>= 1` |
-| `typescript` | `>= 5.7` |
+| Package               | Version  |
+| --------------------- | -------- |
+| `vue`                 | `>= 3.5` |
+| `@tanstack/vue-query` | `>= 5`   |
+| `@elysiajs/eden`      | `>= 1`   |
+| `typescript`          | `>= 5.7` |
 
 ## TypeScript baseline
 
@@ -80,15 +80,15 @@ Use strict mode and Bun or Vite-style module resolution so Eden and TanStack gen
 4. Wrap that client with `createEdenQueryHelpers`.
 
 ```ts [src/main.ts]
-import { createApp } from 'vue'
-import { QueryClient, VueQueryPlugin } from '@tanstack/vue-query'
-import App from './App.vue'
+import { createApp } from "vue";
+import { QueryClient, VueQueryPlugin } from "@tanstack/vue-query";
+import App from "./App.vue";
 
-const app = createApp(App)
-const queryClient = new QueryClient()
+const app = createApp(App);
+const queryClient = new QueryClient();
 
-app.use(VueQueryPlugin, { queryClient })
-app.mount('#app')
+app.use(VueQueryPlugin, { queryClient });
+app.mount("#app");
 ```
 
 ## Nuxt setup checklist
@@ -97,8 +97,8 @@ Register the module and start using the helpers from a composable.
 
 ```ts [nuxt.config.ts]
 export default defineNuxtConfig({
-  modules: ['@elysia-vue-query/nuxt'],
-})
+  modules: ["@elysia-vue-query/nuxt"],
+});
 ```
 
 The Nuxt module:

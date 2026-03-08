@@ -1,26 +1,28 @@
 {
   "name": "@elysia-vue-query/nuxt",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Nuxt module for elysia-vue-query — zero-config SSR dehydration and hydration",
+  "keywords": [
+    "eden",
+    "elysia",
+    "nuxt",
+    "nuxt-module",
+    "ssr",
+    "tanstack-query",
+    "typescript",
+    "vue-query"
+  ],
   "homepage": "https://elysia-vue.pages.dev/guide/nuxt-ssr",
+  "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/elysia-vue-query/elysia-vue-query.git",
+    "url": "git+https://github.com/elysia-vue-query/elysia-vue-query.git",
     "directory": "packages/nuxt"
   },
-  "keywords": ["elysia", "eden", "nuxt", "nuxt-module", "tanstack-query", "vue-query", "ssr", "typescript"],
-  "publishConfig": {
-    "access": "public",
-    "provenance": true
-  },
-  "license": "MIT",
+  "files": [
+    "dist"
+  ],
   "type": "module",
-  "exports": {
-    ".": {
-      "types": "./dist/types.d.mts",
-      "import": "./dist/module.mjs"
-    }
-  },
   "main": "./dist/module.mjs",
   "typesVersions": {
     "*": {
@@ -29,9 +31,15 @@
       ]
     }
   },
-  "files": [
-    "dist"
-  ],
+  "exports": {
+    ".": {
+      "types": "./dist/types.d.mts",
+      "import": "./dist/module.mjs"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "nuxt-module-build build",
     "prepack": "nuxt-module-build build",
@@ -43,12 +51,8 @@
     "test:types": "vue-tsc --noEmit"
   },
   "dependencies": {
-    "@nuxt/kit": "^4.3.1",
-    "@elysia-vue-query/vue": "^1"
-  },
-  "peerDependencies": {
-    "@tanstack/vue-query": "^5",
-    "nuxt": "^4"
+    "@elysia-vue-query/vue": "^1.1.0",
+    "@nuxt/kit": "^4.3.1"
   },
   "devDependencies": {
     "@nuxt/devtools": "^3.2.2",
@@ -64,5 +68,9 @@
     "typescript": "~5.9.3",
     "vitest": "^4.0.18",
     "vue-tsc": "^3.2.5"
+  },
+  "peerDependencies": {
+    "@tanstack/vue-query": "^5",
+    "nuxt": "^4"
   }
 }

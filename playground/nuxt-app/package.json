@@ -1,6 +1,6 @@
 {
-  "private": true,
   "name": "@playground/nuxt-app",
+  "private": true,
   "type": "module",
   "scripts": {
     "dev": "nuxt dev",
@@ -8,9 +8,9 @@
     "generate": "nuxt generate"
   },
   "dependencies": {
+    "@elysia-vue-query/core": "workspace:*",
     "@elysia-vue-query/nuxt": "workspace:*",
     "@elysia-vue-query/vue": "workspace:*",
-    "@elysia-vue-query/core": "workspace:*",
     "@elysiajs/eden": "^1.4.8",
     "@tanstack/vue-query": "^5.92.9",
     "elysia": "^1.4.27",

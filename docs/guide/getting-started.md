@@ -5,66 +5,66 @@ This guide walks through the standard setup for a Vue app: create the client, wr
 ## 1. Register TanStack Query once
 
 ```ts [src/main.ts]
-import { createApp } from 'vue'
-import { QueryClient, VueQueryPlugin } from '@tanstack/vue-query'
-import App from './App.vue'
+import { createApp } from "vue";
+import { QueryClient, VueQueryPlugin } from "@tanstack/vue-query";
+import App from "./App.vue";
 
-const app = createApp(App)
+const app = createApp(App);
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 30_000,
     },
   },
-})
+});
 
-app.use(VueQueryPlugin, { queryClient })
-app.mount('#app')
+app.use(VueQueryPlugin, { queryClient });
+app.mount("#app");
 ```
 
 ## 2. Create typed Eden helpers
 
 ```ts twoslash [src/lib/eden.ts]
 interface User {
-  id: number
-  name: string
-  email: string
+  id: number;
+  name: string;
+  email: string;
 }
 
 interface AppClient {
   users: {
     get: () => Promise<{
-      data: User[]
-      error: null
-      status: 200
-    }>
+      data: User[];
+      error: null;
+      status: 200;
+    }>;
     post: (body: { name: string; email: string }) => Promise<{
-      data: User
-      error: null
-      status: 201
-    }>
-  }
+      data: User;
+      error: null;
+      status: 201;
+    }>;
+  };
 }
 
 declare function createEdenQueryHelpers(client: AppClient): {
-  proxy: AppClient
-  useQuery(endpoint: AppClient['users']['get']): {
-    data: { value: User[] | undefined }
-  }
-  useMutation(endpoint: AppClient['users']['post']): {
-    mutate: (body: { name: string; email: string }) => void
-  }
-}
+  proxy: AppClient;
+  useQuery(endpoint: AppClient["users"]["get"]): {
+    data: { value: User[] | undefined };
+  };
+  useMutation(endpoint: AppClient["users"]["post"]): {
+    mutate: (body: { name: string; email: string }) => void;
+  };
+};
 
-declare const client: AppClient
-export const eden = createEdenQueryHelpers(client)
+declare const client: AppClient;
+export const eden = createEdenQueryHelpers(client);
 
-const query = eden.useQuery(eden.proxy.users.get)
-query.data
+const query = eden.useQuery(eden.proxy.users.get);
+query.data;
 //   ^?
 
-const mutation = eden.useMutation(eden.proxy.users.post)
-mutation.mutate
+const mutation = eden.useMutation(eden.proxy.users.post);
+mutation.mutate;
 //       ^?
 ```
 
@@ -76,11 +76,15 @@ Pass the endpoint reference itself, not the result of calling it.
 
 ```vue [src/components/UserList.vue]
 <script setup lang="ts">
-import { eden } from '../lib/eden'
+import { eden } from "../lib/eden";
 
-const { data: users, isLoading, error } = eden.useQuery(eden.proxy.users.get, {
+const {
+  data: users,
+  isLoading,
+  error,
+} = eden.useQuery(eden.proxy.users.get, {
   staleTime: 60_000,
-})
+});
 </script>
 
 <template>
@@ -88,9 +92,7 @@ const { data: users, isLoading, error } = eden.useQuery(eden.proxy.users.get, {
   <p v-else-if="error">Request failed: {{ error.message }}</p>
 
   <ul v-else>
-    <li v-for="user in users" :key="user.id">
-      {{ user.name }} · {{ user.email }}
-    </li>
+    <li v-for="user in users" :key="user.id">{{ user.name }} · {{ user.email }}</li>
   </ul>
 </template>
 ```
@@ -105,24 +107,24 @@ What happens under the hood:
 
 ```vue [src/components/CreateUser.vue]
 <script setup lang="ts">
-import { ref } from 'vue'
-import { eden } from '../lib/eden'
+import { ref } from "vue";
+import { eden } from "../lib/eden";
 
-const name = ref('')
-const email = ref('')
+const name = ref("");
+const email = ref("");
 
-const createUser = eden.useMutation(eden.proxy.users.post)
+const createUser = eden.useMutation(eden.proxy.users.post);
 
 function submit() {
   createUser.mutate(
     { name: name.value, email: email.value },
     {
       onSuccess: () => {
-        name.value = ''
-        email.value = ''
+        name.value = "";
+        email.value = "";
       },
     },
-  )
+  );
 }
 </script>
 
@@ -131,7 +133,7 @@ function submit() {
     <input v-model="name" placeholder="Name" />
     <input v-model="email" placeholder="Email" />
     <button :disabled="createUser.isPending.value" type="submit">
-      {{ createUser.isPending.value ? 'Saving...' : 'Create user' }}
+      {{ createUser.isPending.value ? "Saving..." : "Create user" }}
     </button>
   </form>
 </template>
@@ -143,14 +145,14 @@ When the mutation succeeds, all `users.*` queries are invalidated automatically.
 
 ```ts twoslash
 type UserDetailsRoute = (params: { id: string }) => Promise<{
-  data: { id: string; name: string }
-  error: null
-  status: 200
-}>
+  data: { id: string; name: string };
+  error: null;
+  status: 200;
+}>;
 
-declare const route: UserDetailsRoute
+declare const route: UserDetailsRoute;
 
-route
+route;
 // ^?
 ```
 

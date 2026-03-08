@@ -13,7 +13,7 @@ type SerializedParam =
   | boolean
   | null
   | readonly SerializedParam[]
-  | { readonly [key: string]: SerializedParam }
+  | { readonly [key: string]: SerializedParam };
 ```
 
 Represents the subset of values that can safely participate in query keys.
@@ -22,9 +22,9 @@ Represents the subset of values that can safely participate in query keys.
 
 ```ts
 interface RouteMeta {
-  readonly segments: readonly string[]
-  readonly method?: string
-  readonly params?: SerializedParam
+  readonly segments: readonly string[];
+  readonly method?: string;
+  readonly params?: SerializedParam;
 }
 ```
 
@@ -36,8 +36,8 @@ The metadata stored on the enhanced proxy.
 type EdenQueryKey = readonly [
   typeof EDEN_ROUTE_SYMBOL,
   ...string[],
-  ...[SerializedParam?, string?]
-]
+  ...[SerializedParam?, string?],
+];
 ```
 
 The canonical tuple returned by `getKey()` and `buildQueryKey()`.
@@ -46,8 +46,8 @@ The canonical tuple returned by `getKey()` and `buildQueryKey()`.
 
 ```ts
 type RouteMetaBrand = {
-  readonly [EDEN_ROUTE_SYMBOL]: RouteMeta
-}
+  readonly [EDEN_ROUTE_SYMBOL]: RouteMeta;
+};
 ```
 
 The internal type-level brand used to carry route metadata through the proxy.
@@ -55,7 +55,7 @@ The internal type-level brand used to carry route metadata through the proxy.
 ### `EdenEnhancedClient<TClient>`
 
 ```ts
-type EdenEnhancedClient<TClient> = TClient & RouteMetaBrand
+type EdenEnhancedClient<TClient> = TClient & RouteMetaBrand;
 ```
 
 ## Vue types
@@ -63,10 +63,12 @@ type EdenEnhancedClient<TClient> = TClient & RouteMetaBrand
 ### `EdenUseQueryOptions<TData, TError>`
 
 ```ts
-interface EdenUseQueryOptions<TData, TError>
-  extends Omit<UseQueryOptions<TData, TError>, 'queryKey' | 'queryFn'> {
-  readonly queryKey?: never
-  readonly queryFn?: never
+interface EdenUseQueryOptions<TData, TError> extends Omit<
+  UseQueryOptions<TData, TError>,
+  "queryKey" | "queryFn"
+> {
+  readonly queryKey?: never;
+  readonly queryFn?: never;
 }
 ```
 
@@ -75,9 +77,11 @@ This prevents consumers from bypassing the generated key and function.
 ### `EdenUseMutationOptions<TData, TError, TVariables>`
 
 ```ts
-interface EdenUseMutationOptions<TData, TError, TVariables>
-  extends Omit<UseMutationOptions<TData, TError, TVariables>, 'mutationFn'> {
-  readonly mutationFn?: never
+interface EdenUseMutationOptions<TData, TError, TVariables> extends Omit<
+  UseMutationOptions<TData, TError, TVariables>,
+  "mutationFn"
+> {
+  readonly mutationFn?: never;
 }
 ```
 
@@ -85,12 +89,12 @@ interface EdenUseMutationOptions<TData, TError, TVariables>
 
 ```ts
 interface EdenQueryHelpers<TClient> {
-  readonly proxy: TClient
-  useQuery<TEndpoint>(...args: unknown[]): unknown
-  useMutation<TEndpoint>(...args: unknown[]): unknown
-  prefetch<TEndpoint>(endpoint: TEndpoint, queryClient?: QueryClient): Promise<void>
-  invalidate(endpoint: unknown, queryClient?: QueryClient): Promise<void>
-  getKey(endpoint: unknown): EdenQueryKey
+  readonly proxy: TClient;
+  useQuery<TEndpoint>(...args: unknown[]): unknown;
+  useMutation<TEndpoint>(...args: unknown[]): unknown;
+  prefetch<TEndpoint>(endpoint: TEndpoint, queryClient?: QueryClient): Promise<void>;
+  invalidate(endpoint: unknown, queryClient?: QueryClient): Promise<void>;
+  getKey(endpoint: unknown): EdenQueryKey;
 }
 ```
 

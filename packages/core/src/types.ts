@@ -1,4 +1,4 @@
-import type { EDEN_ROUTE_SYMBOL } from './index'
+import type { EDEN_ROUTE_SYMBOL } from "./index";
 
 export type SerializedParam =
   | string
@@ -6,18 +6,22 @@ export type SerializedParam =
   | boolean
   | null
   | readonly SerializedParam[]
-  | { readonly [key: string]: SerializedParam }
+  | { readonly [key: string]: SerializedParam };
 
 export interface RouteMeta {
-  readonly segments: readonly string[]
-  readonly method?: string
-  readonly params?: SerializedParam
+  readonly segments: readonly string[];
+  readonly method?: string;
+  readonly params?: SerializedParam;
 }
 
-export type EdenQueryKey = readonly [typeof EDEN_ROUTE_SYMBOL, ...string[], ...[SerializedParam?, string?]]
+export type EdenQueryKey = readonly [
+  typeof EDEN_ROUTE_SYMBOL,
+  ...string[],
+  ...[SerializedParam?, string?],
+];
 
 export interface RouteMetaBrand {
-  readonly [EDEN_ROUTE_SYMBOL]: RouteMeta
+  readonly [EDEN_ROUTE_SYMBOL]: RouteMeta;
 }
 
-export type EdenEnhancedClient<TClient> = TClient & RouteMetaBrand
+export type EdenEnhancedClient<TClient> = TClient & RouteMetaBrand;

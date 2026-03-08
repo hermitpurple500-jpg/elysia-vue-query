@@ -8,12 +8,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "vue": "^3.5.29",
-    "@tanstack/vue-query": "^5.92.9",
-    "@elysiajs/eden": "^1.4.8",
-    "@elysia-vue-query/vue": "workspace:*",
     "@elysia-vue-query/core": "workspace:*",
-    "elysia": "^1.4.27"
+    "@elysia-vue-query/vue": "workspace:*",
+    "@elysiajs/eden": "^1.4.8",
+    "@tanstack/vue-query": "^5.92.9",
+    "elysia": "^1.4.27",
+    "vue": "^3.5.29"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.2.1",

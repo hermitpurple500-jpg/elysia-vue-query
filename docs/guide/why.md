@@ -8,15 +8,15 @@ Eden Treaty gives you a typed client. TanStack Query gives you caching, retries,
 
 ```ts
 const users = useQuery({
-  queryKey: ['users', 'list'],
+  queryKey: ["users", "list"],
   queryFn: async () => {
-    const response = await client.users.get()
+    const response = await client.users.get();
     if (response.error) {
-      throw response.error
+      throw response.error;
     }
-    return response.data
+    return response.data;
   },
-})
+});
 ```
 
 This is workable once. It is fragile when repeated across a real app because you keep rewriting:
@@ -29,10 +29,10 @@ This is workable once. It is fragile when repeated across a real app because you
 ## What this package changes
 
 ```ts
-const eden = createEdenQueryHelpers(client)
+const eden = createEdenQueryHelpers(client);
 
-const users = eden.useQuery(eden.proxy.users.get)
-const createUser = eden.useMutation(eden.proxy.users.post)
+const users = eden.useQuery(eden.proxy.users.get);
+const createUser = eden.useMutation(eden.proxy.users.post);
 ```
 
 The repeated parts become runtime behavior instead of copy-pasted convention.

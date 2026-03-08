@@ -2,18 +2,19 @@
   <img src="docs/public/logo_v.svg" alt="Elysia Vue Query" width="220" />
   <br /><br />
 
-  <strong>Deterministic, type-safe TanStack Query transport layer for ElysiaJS Eden Treaty.</strong>
-  <br />
-  Built for Vue 3 and Nuxt — automatic query keys, smart cache invalidation, SSR hydration.
+<strong>Deterministic, type-safe TanStack Query transport layer for ElysiaJS Eden Treaty.</strong>
+<br />
+Built for Vue 3 and Nuxt — automatic query keys, smart cache invalidation, SSR hydration.
 
-  <br /><br />
+<br /><br />
 
-  [![Version](https://npmx.dev/api/registry/badge/version/@elysia-vue-query/vue?labelColor=030712&color=f06292)](https://npmx.dev/package/@elysia-vue-query/vue)
-  [![Downloads](https://npmx.dev/api/registry/badge/downloads/@elysia-vue-query/vue?labelColor=030712&color=f06292)](https://npmx.dev/package/@elysia-vue-query/vue)
-  [![Size](https://npmx.dev/api/registry/badge/size/@elysia-vue-query/vue?labelColor=030712&color=a855f7)](https://npmx.dev/package/@elysia-vue-query/vue)
-  [![License](https://npmx.dev/api/registry/badge/license/@elysia-vue-query/vue?labelColor=030712&color=4ade80)](https://npmx.dev/package/@elysia-vue-query/vue)
-  [![CI](https://img.shields.io/github/actions/workflow/status/elysia-vue-query/elysia-vue-query/ci.yml?style=flat-square&colorA=030712&label=CI)](https://github.com/elysia-vue-query/elysia-vue-query/actions)
-  [![Types](https://npmx.dev/api/registry/badge/types/@elysia-vue-query/vue?labelColor=030712&color=3b82f6)](https://npmx.dev/package/@elysia-vue-query/vue)
+[![Version](https://npmx.dev/api/registry/badge/version/@elysia-vue-query/vue?labelColor=030712&color=f06292)](https://npmx.dev/package/@elysia-vue-query/vue)
+[![Downloads](https://npmx.dev/api/registry/badge/downloads/@elysia-vue-query/vue?labelColor=030712&color=f06292)](https://npmx.dev/package/@elysia-vue-query/vue)
+[![Size](https://npmx.dev/api/registry/badge/size/@elysia-vue-query/vue?labelColor=030712&color=a855f7)](https://npmx.dev/package/@elysia-vue-query/vue)
+[![License](https://npmx.dev/api/registry/badge/license/@elysia-vue-query/vue?labelColor=030712&color=4ade80)](https://npmx.dev/package/@elysia-vue-query/vue)
+[![CI](https://img.shields.io/github/actions/workflow/status/elysia-vue-query/elysia-vue-query/ci.yml?style=flat-square&colorA=030712&label=CI)](https://github.com/elysia-vue-query/elysia-vue-query/actions)
+[![Types](https://npmx.dev/api/registry/badge/types/@elysia-vue-query/vue?labelColor=030712&color=3b82f6)](https://npmx.dev/package/@elysia-vue-query/vue)
+
 </div>
 
 ---
@@ -30,11 +31,11 @@ It wraps your Eden client once. Everything else — `useQuery`, `useMutation`, q
 
 ## Packages
 
-| Package | Description | Version |
-|---|---|---|
-| [`@elysia-vue-query/core`](packages/core) | Proxy engine, key builders, serialization | [![npm](https://npmx.dev/api/registry/badge/version/@elysia-vue-query/core?labelColor=030712&color=f06292&name=true)](https://npmx.dev/package/@elysia-vue-query/core) |
-| [`@elysia-vue-query/vue`](packages/vue) | Vue 3 composables — `useQuery`, `useMutation`, `prefetch` | [![npm](https://npmx.dev/api/registry/badge/version/@elysia-vue-query/vue?labelColor=030712&color=f06292&name=true)](https://npmx.dev/package/@elysia-vue-query/vue) |
-| [`@elysia-vue-query/nuxt`](packages/nuxt) | Nuxt module — SSR dehydration + client hydration | [![npm](https://npmx.dev/api/registry/badge/version/@elysia-vue-query/nuxt?labelColor=030712&color=f06292&name=true)](https://npmx.dev/package/@elysia-vue-query/nuxt) |
+| Package                                   | Description                                               | Version                                                                                                                                                                |
+| ----------------------------------------- | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`@elysia-vue-query/core`](packages/core) | Proxy engine, key builders, serialization                 | [![npm](https://npmx.dev/api/registry/badge/version/@elysia-vue-query/core?labelColor=030712&color=f06292&name=true)](https://npmx.dev/package/@elysia-vue-query/core) |
+| [`@elysia-vue-query/vue`](packages/vue)   | Vue 3 composables — `useQuery`, `useMutation`, `prefetch` | [![npm](https://npmx.dev/api/registry/badge/version/@elysia-vue-query/vue?labelColor=030712&color=f06292&name=true)](https://npmx.dev/package/@elysia-vue-query/vue)   |
+| [`@elysia-vue-query/nuxt`](packages/nuxt) | Nuxt module — SSR dehydration + client hydration          | [![npm](https://npmx.dev/api/registry/badge/version/@elysia-vue-query/nuxt?labelColor=030712&color=f06292&name=true)](https://npmx.dev/package/@elysia-vue-query/nuxt) |
 
 ---
 
@@ -76,46 +77,46 @@ bun add @elysia-vue-query/nuxt @tanstack/vue-query @elysiajs/eden
 
 ```ts
 // main.ts
-import { createApp } from 'vue'
-import { VueQueryPlugin } from '@tanstack/vue-query'
-import App from './App.vue'
+import { createApp } from "vue";
+import { VueQueryPlugin } from "@tanstack/vue-query";
+import App from "./App.vue";
 
-createApp(App).use(VueQueryPlugin).mount('#app')
+createApp(App).use(VueQueryPlugin).mount("#app");
 ```
 
 **2. Create helpers from your Eden client**
 
 ```ts
 // src/lib/eden.ts
-import { treaty } from '@elysiajs/eden'
-import { createEdenQueryHelpers } from '@elysia-vue-query/vue'
-import type { App } from '../../backend/src'
+import { treaty } from "@elysiajs/eden";
+import { createEdenQueryHelpers } from "@elysia-vue-query/vue";
+import type { App } from "../../backend/src";
 
-const client = treaty<App>('http://localhost:3000')
-export const eden = createEdenQueryHelpers(client)
+const client = treaty<App>("http://localhost:3000");
+export const eden = createEdenQueryHelpers(client);
 ```
 
 **3. Use in components**
 
 ```vue
 <script setup lang="ts">
-import { eden } from '@/lib/eden'
+import { eden } from "@/lib/eden";
 
 // Typed read — query key derived automatically
-const { data: users, isPending } = eden.useQuery(eden.proxy.users.get)
+const { data: users, isPending } = eden.useQuery(eden.proxy.users.get);
 
 // Typed write — invalidates users.* queries on success
-const createUser = eden.useMutation(eden.proxy.users.post)
+const createUser = eden.useMutation(eden.proxy.users.post);
 </script>
 ```
 
 **Queries with params** — reactive refs are supported:
 
 ```ts
-const page = ref(1)
+const page = ref(1);
 
 // Re-fetches automatically when page.value changes
-const { data } = eden.useQuery(eden.proxy.users.get({ page, limit: 20 }))
+const { data } = eden.useQuery(eden.proxy.users.get({ page, limit: 20 }));
 ```
 
 ---
@@ -127,8 +128,8 @@ const { data } = eden.useQuery(eden.proxy.users.get({ page, limit: 20 }))
 ```ts
 // nuxt.config.ts
 export default defineNuxtConfig({
-  modules: ['@elysia-vue-query/nuxt'],
-})
+  modules: ["@elysia-vue-query/nuxt"],
+});
 ```
 
 The module creates a `QueryClient`, registers a `VueQueryPlugin`, dehydrates the cache into the Nuxt payload on the server, and hydrates it before the page runs on the client. No manual wiring required.
@@ -137,12 +138,12 @@ The module creates a `QueryClient`, registers a `VueQueryPlugin`, dehydrates the
 
 ```ts
 // composables/eden.ts
-import { treaty } from '@elysiajs/eden'
-import { createEdenQueryHelpers } from '@elysia-vue-query/vue'
-import type { App } from '@playground/api'
+import { treaty } from "@elysiajs/eden";
+import { createEdenQueryHelpers } from "@elysia-vue-query/vue";
+import type { App } from "@playground/api";
 
-const client = treaty<App>('http://localhost:3000')
-export const eden = createEdenQueryHelpers(client)
+const client = treaty<App>("http://localhost:3000");
+export const eden = createEdenQueryHelpers(client);
 ```
 
 **3. Use queries in pages**
@@ -150,10 +151,10 @@ export const eden = createEdenQueryHelpers(client)
 ```vue
 <!-- pages/users.vue -->
 <script setup lang="ts">
-import { eden } from '~/composables/eden'
+import { eden } from "~/composables/eden";
 
-const users = eden.useQuery(eden.proxy.users.get)
-const createUser = eden.useMutation(eden.proxy.users.post)
+const users = eden.useQuery(eden.proxy.users.get);
+const createUser = eden.useMutation(eden.proxy.users.post);
 </script>
 ```
 
@@ -161,16 +162,16 @@ const createUser = eden.useMutation(eden.proxy.users.post)
 
 ```vue
 <script setup lang="ts">
-import { useQueryClient } from '@tanstack/vue-query'
-import { eden } from '~/composables/eden'
+import { useQueryClient } from "@tanstack/vue-query";
+import { eden } from "~/composables/eden";
 
-const queryClient = useQueryClient()
+const queryClient = useQueryClient();
 
 if (import.meta.server) {
-  await eden.prefetch(eden.proxy.posts.get, queryClient)
+  await eden.prefetch(eden.proxy.posts.get, queryClient);
 }
 
-const posts = eden.useQuery(eden.proxy.posts.get)
+const posts = eden.useQuery(eden.proxy.posts.get);
 </script>
 ```
 
@@ -181,30 +182,30 @@ const posts = eden.useQuery(eden.proxy.posts.get)
 Keys are derived from the route structure. You never write them manually.
 
 ```ts
-eden.proxy.users.get
+eden.proxy.users.get;
 // [EDEN_ROUTE_SYMBOL, 'users', 'get']
 
-eden.proxy.users.get({ page: 1, limit: 20 })
+eden.proxy.users.get({ page: 1, limit: 20 });
 // [EDEN_ROUTE_SYMBOL, 'users', { limit: 20, page: 1 }, 'get']
 ```
 
 Access the raw key when you need to talk to `queryClient` directly:
 
 ```ts
-const key = eden.getKey(eden.proxy.users.get)
+const key = eden.getKey(eden.proxy.users.get);
 
-queryClient.getQueryData(key)
-queryClient.setQueryData(key, updater)
+queryClient.getQueryData(key);
+queryClient.setQueryData(key, updater);
 ```
 
 Prefix-based invalidation for subtree operations:
 
 ```ts
-import { buildPartialKey } from '@elysia-vue-query/core'
+import { buildPartialKey } from "@elysia-vue-query/core";
 
 await queryClient.invalidateQueries({
-  queryKey: buildPartialKey('users'),
-})
+  queryKey: buildPartialKey("users"),
+});
 ```
 
 ---
@@ -218,9 +219,9 @@ const createUser = eden.useMutation(eden.proxy.users.post, {
   // Additional invalidation beyond the automatic prefix
   invalidates: [eden.proxy.posts.get],
   onSuccess(data) {
-    console.log('created', data)
+    console.log("created", data);
   },
-})
+});
 ```
 
 ---
@@ -233,24 +234,24 @@ Full API documentation is available at [elysia-vue.pages.dev/api/vue](https://el
 
 Returns an `eden` object with:
 
-| Method | Description |
-|---|---|
-| `eden.useQuery(endpoint, options?)` | Reactive TanStack `useQuery` wrapper |
+| Method                                 | Description                                                    |
+| -------------------------------------- | -------------------------------------------------------------- |
+| `eden.useQuery(endpoint, options?)`    | Reactive TanStack `useQuery` wrapper                           |
 | `eden.useMutation(endpoint, options?)` | Reactive TanStack `useMutation` wrapper with auto-invalidation |
-| `eden.prefetch(endpoint, queryClient)` | Server-side prefetch for SSR |
-| `eden.getKey(endpoint)` | Returns the deterministic query key |
-| `eden.proxy` | Typed proxy for building endpoint references |
+| `eden.prefetch(endpoint, queryClient)` | Server-side prefetch for SSR                                   |
+| `eden.getKey(endpoint)`                | Returns the deterministic query key                            |
+| `eden.proxy`                           | Typed proxy for building endpoint references                   |
 
 ### `@elysia-vue-query/core` utilities
 
-| Export | Description |
-|---|---|
-| `buildQueryKey(meta)` | Builds a full query key from `RouteMeta` |
-| `buildMutationInvalidationKey(endpoint)` | Builds a prefix key for mutation invalidation |
-| `buildPartialKey(...segments)` | Builds a partial key for subtree invalidation |
-| `stableSerialize(obj)` | Deterministic JSON serialization with sorted keys |
-| `getRouteMeta(endpoint)` | Extracts `RouteMeta` from a proxy endpoint |
-| `EDEN_ROUTE_SYMBOL` | The symbol used as the first segment of every key |
+| Export                                   | Description                                       |
+| ---------------------------------------- | ------------------------------------------------- |
+| `buildQueryKey(meta)`                    | Builds a full query key from `RouteMeta`          |
+| `buildMutationInvalidationKey(endpoint)` | Builds a prefix key for mutation invalidation     |
+| `buildPartialKey(...segments)`           | Builds a partial key for subtree invalidation     |
+| `stableSerialize(obj)`                   | Deterministic JSON serialization with sorted keys |
+| `getRouteMeta(endpoint)`                 | Extracts `RouteMeta` from a proxy endpoint        |
+| `EDEN_ROUTE_SYMBOL`                      | The symbol used as the first segment of every key |
 
 ---
 

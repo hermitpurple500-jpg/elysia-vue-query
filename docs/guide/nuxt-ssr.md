@@ -23,29 +23,29 @@ bun add @elysia-vue-query/nuxt
 
 ```ts [nuxt.config.ts]
 export default defineNuxtConfig({
-  modules: ['@elysia-vue-query/nuxt'],
-})
+  modules: ["@elysia-vue-query/nuxt"],
+});
 ```
 
 ## Create helpers in a composable
 
 ```ts [composables/eden.ts]
-import { treaty } from '@elysiajs/eden'
-import { createEdenQueryHelpers } from '@elysia-vue-query/vue'
-import type { App } from '@playground/api'
+import { treaty } from "@elysiajs/eden";
+import { createEdenQueryHelpers } from "@elysia-vue-query/vue";
+import type { App } from "@playground/api";
 
-const client = treaty<App>('http://localhost:3000')
-export const eden = createEdenQueryHelpers(client)
+const client = treaty<App>("http://localhost:3000");
+export const eden = createEdenQueryHelpers(client);
 ```
 
 ## Use queries in pages
 
 ```vue [pages/users.vue]
 <script setup lang="ts">
-import { eden } from '~/composables/eden'
+import { eden } from "~/composables/eden";
 
-const users = eden.useQuery(eden.proxy.users.get)
-const createUser = eden.useMutation(eden.proxy.users.post)
+const users = eden.useQuery(eden.proxy.users.get);
+const createUser = eden.useMutation(eden.proxy.users.post);
 </script>
 ```
 
@@ -63,16 +63,16 @@ Use `eden.prefetch()` when:
 
 ```vue [pages/posts.vue]
 <script setup lang="ts">
-import { useQueryClient } from '@tanstack/vue-query'
-import { eden } from '~/composables/eden'
+import { useQueryClient } from "@tanstack/vue-query";
+import { eden } from "~/composables/eden";
 
-const queryClient = useQueryClient()
+const queryClient = useQueryClient();
 
 if (import.meta.server) {
-  await eden.prefetch(eden.proxy.posts.get, queryClient)
+  await eden.prefetch(eden.proxy.posts.get, queryClient);
 }
 
-const posts = eden.useQuery(eden.proxy.posts.get)
+const posts = eden.useQuery(eden.proxy.posts.get);
 </script>
 ```
 

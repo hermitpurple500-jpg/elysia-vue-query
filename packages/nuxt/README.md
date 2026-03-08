@@ -27,19 +27,19 @@ bun add @elysia-vue-query/nuxt
 ```ts
 // nuxt.config.ts
 export default defineNuxtConfig({
-  modules: ['@elysia-vue-query/nuxt'],
-})
+  modules: ["@elysia-vue-query/nuxt"],
+});
 ```
 
 Then create a composable for your Eden client:
 
 ```ts
 // composables/eden.ts
-import { treaty } from '@elysiajs/eden'
-import type { App } from '../server'
+import { treaty } from "@elysiajs/eden";
+import type { App } from "../server";
 
-const client = treaty<App>('http://localhost:3000')
-export const eden = createEdenQueryHelpers(client) // auto-imported
+const client = treaty<App>("http://localhost:3000");
+export const eden = createEdenQueryHelpers(client); // auto-imported
 ```
 
 ## Documentation

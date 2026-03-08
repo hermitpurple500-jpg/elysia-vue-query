@@ -1,16 +1,16 @@
-import { defineConfig } from 'tsdown'
+import { defineConfig } from "tsdown";
 
 export default defineConfig({
-  entry: ['./src/index.ts'],
-  format: ['esm', 'cjs'],
+  entry: ["./src/index.ts"],
+  format: ["esm", "cjs"],
   dts: { sourcemap: true },
   clean: true,
   treeshake: true,
   sourcemap: true,
   deps: {
-    neverBundle: ['vue', '@tanstack/vue-query', '@elysia-vue-query/core'],
+    neverBundle: ["vue", "@tanstack/vue-query", "@elysia-vue-query/core"],
   },
-  publint: 'ci-only',
-  attw: 'ci-only',
-  failOnWarn: 'ci-only',
-})
+  publint: "ci-only",
+  attw: "ci-only",
+  failOnWarn: "ci-only",
+});

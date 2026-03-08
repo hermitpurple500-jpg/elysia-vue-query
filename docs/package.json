@@ -7,6 +7,10 @@
     "build": "vitepress build",
     "preview": "vitepress preview"
   },
+  "dependencies": {
+    "lucide-vue-next": "^0.577.0",
+    "vitepress-plugin-group-icons": "^1.7.1"
+  },
   "devDependencies": {
     "@shikijs/vitepress-twoslash": "^4.0.1",
     "@tailwindcss/vite": "^4.2.1",
@@ -15,9 +19,5 @@
     "vitepress": "next",
     "vitepress-plugin-llms": "^1.11.0",
     "vue": "^3.5.29"
-  },
-  "dependencies": {
-    "lucide-vue-next": "^0.577.0",
-    "vitepress-plugin-group-icons": "^1.7.1"
   }
 }

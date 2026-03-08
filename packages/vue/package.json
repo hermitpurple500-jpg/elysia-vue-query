@@ -1,21 +1,29 @@
 {
   "name": "@elysia-vue-query/vue",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Vue 3 composables (useQuery, useMutation, prefetch) for elysia-vue-query",
-  "type": "module",
-  "author": "Saku Shiina <shiinasaku@proton.me>",
-  "license": "MIT",
+  "keywords": [
+    "eden",
+    "elysia",
+    "ssr",
+    "tanstack-query",
+    "typescript",
+    "vue",
+    "vue-query",
+    "vue3"
+  ],
   "homepage": "https://elysia-vue.pages.dev",
+  "license": "MIT",
+  "author": "Saku Shiina <shiinasaku@proton.me>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/elysia-vue-query/elysia-vue-query.git",
+    "url": "git+https://github.com/elysia-vue-query/elysia-vue-query.git",
     "directory": "packages/vue"
   },
-  "keywords": ["elysia", "eden", "vue", "vue3", "tanstack-query", "vue-query", "typescript", "ssr"],
-  "publishConfig": {
-    "access": "public",
-    "provenance": true
-  },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.mts",
@@ -31,22 +39,24 @@
       }
     }
   },
-  "files": ["dist"],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsdown",
     "dev": "tsdown --watch"
   },
   "dependencies": {
-    "@elysia-vue-query/core": "^1"
+    "@elysia-vue-query/core": "^1.1.0"
+  },
+  "devDependencies": {
+    "@tanstack/vue-query": "^5.92.9",
+    "tsdown": "^0.21.0",
+    "typescript": "^5.9.3",
+    "vue": "^3.5.29"
   },
   "peerDependencies": {
     "@tanstack/vue-query": "^5",
     "vue": "^3"
-  },
-  "devDependencies": {
-    "@tanstack/vue-query": "^5.92.9",
-    "vue": "^3.5.29",
-    "tsdown": "^0.21.0",
-    "typescript": "^5.9.3"
   }
 }

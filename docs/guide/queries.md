@@ -6,9 +6,9 @@
 
 ```vue [UserList.vue]
 <script setup lang="ts">
-import { eden } from '../lib/eden'
+import { eden } from "../lib/eden";
 
-const { data: users, isLoading, error } = eden.useQuery(eden.proxy.users.get)
+const { data: users, isLoading, error } = eden.useQuery(eden.proxy.users.get);
 </script>
 ```
 
@@ -23,9 +23,7 @@ That single line gives you:
 Call the endpoint with params when the request needs them.
 
 ```ts
-const users = eden.useQuery(
-  eden.proxy.users.get({ page: 1, limit: 20 }),
-)
+const users = eden.useQuery(eden.proxy.users.get({ page: 1, limit: 20 }));
 ```
 
 The params participate in the query key after stable serialization, so `{ limit: 20, page: 1 }` and `{ page: 1, limit: 20 }` produce the same key.
@@ -36,11 +34,11 @@ Refs can be embedded directly in the proxy access path. When the ref changes, th
 
 ```vue [UserProfile.vue]
 <script setup lang="ts">
-import { ref } from 'vue'
-import { eden } from '../lib/eden'
+import { ref } from "vue";
+import { eden } from "../lib/eden";
 
-const userId = ref('123')
-const profile = eden.useQuery(eden.proxy.users[userId].profile.get)
+const userId = ref("123");
+const profile = eden.useQuery(eden.proxy.users[userId].profile.get);
 </script>
 ```
 
@@ -56,7 +54,7 @@ const users = eden.useQuery(eden.proxy.users.get, {
   retry: 2,
   gcTime: 10 * 60 * 1000,
   refetchOnWindowFocus: false,
-})
+});
 ```
 
 ## Conditional queries
@@ -65,15 +63,14 @@ Use `enabled` exactly as you would with raw TanStack Query.
 
 ```vue [UserPosts.vue]
 <script setup lang="ts">
-import { computed } from 'vue'
-import { eden } from '../lib/eden'
+import { computed } from "vue";
+import { eden } from "../lib/eden";
 
-const selectedUserId = computed(() => '1')
+const selectedUserId = computed(() => "1");
 
-const posts = eden.useQuery(
-  eden.proxy.users[selectedUserId].posts.get,
-  { enabled: computed(() => !!selectedUserId.value) },
-)
+const posts = eden.useQuery(eden.proxy.users[selectedUserId].posts.get, {
+  enabled: computed(() => !!selectedUserId.value),
+});
 </script>
 ```
 
@@ -82,27 +79,27 @@ const posts = eden.useQuery(
 ```ts
 eden.useQuery(eden.proxy.users.get, {
   placeholderData: (previousData) => previousData,
-})
+});
 
 eden.useQuery(eden.proxy.stats.get, {
   refetchInterval: 5_000,
-})
+});
 ```
 
 ## Type inspection example
 
 ```ts twoslash
 interface User {
-  id: number
-  name: string
+  id: number;
+  name: string;
 }
 
 declare const result: {
-  data: { value: User[] | undefined }
-  error: { value: Error | null }
-}
+  data: { value: User[] | undefined };
+  error: { value: Error | null };
+};
 
-result.data.value
+result.data.value;
 //     ^?
 ```
 

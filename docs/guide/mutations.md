@@ -6,15 +6,15 @@
 
 ```vue [CreateUser.vue]
 <script setup lang="ts">
-import { eden } from '../lib/eden'
+import { eden } from "../lib/eden";
 
-const createUser = eden.useMutation(eden.proxy.users.post)
+const createUser = eden.useMutation(eden.proxy.users.post);
 
 function create() {
   createUser.mutate({
-    name: 'Alice',
-    email: 'alice@example.com',
-  })
+    name: "Alice",
+    email: "alice@example.com",
+  });
 }
 </script>
 ```
@@ -26,10 +26,10 @@ The mutation variable type comes from the endpoint body type. The success result
 Successful writes invalidate the route subtree, not just the exact mutation key.
 
 ```ts
-eden.useMutation(eden.proxy.users.post)
+eden.useMutation(eden.proxy.users.post);
 // success => invalidate [EDEN_ROUTE_SYMBOL, 'users']
 
-eden.useMutation(eden.proxy.users.posts.post)
+eden.useMutation(eden.proxy.users.posts.post);
 // success => invalidate [EDEN_ROUTE_SYMBOL, 'users', 'posts']
 ```
 
@@ -42,19 +42,19 @@ That means a `POST /users` invalidates reads like:
 ## Standard callbacks still work
 
 ```ts
-const createUser = eden.useMutation(eden.proxy.users.post)
+const createUser = eden.useMutation(eden.proxy.users.post);
 
 createUser.mutate(
-  { name: 'Alice', email: 'alice@example.com' },
+  { name: "Alice", email: "alice@example.com" },
   {
     onSuccess: (user) => {
-      console.log('created', user.id)
+      console.log("created", user.id);
     },
     onError: (error) => {
-      console.error(error.message)
+      console.error(error.message);
     },
   },
-)
+);
 ```
 
 ## Optimistic updates
@@ -63,26 +63,26 @@ For optimistic UI, pair the helper with `useQueryClient()` just as you would in 
 
 ```vue [DeleteUser.vue]
 <script setup lang="ts">
-import { useQueryClient } from '@tanstack/vue-query'
-import { eden } from '../lib/eden'
+import { useQueryClient } from "@tanstack/vue-query";
+import { eden } from "../lib/eden";
 
-const queryClient = useQueryClient()
-const usersKey = eden.getKey(eden.proxy.users.get)
-const deleteUser = eden.useMutation(eden.proxy.users.delete)
+const queryClient = useQueryClient();
+const usersKey = eden.getKey(eden.proxy.users.get);
+const deleteUser = eden.useMutation(eden.proxy.users.delete);
 
 function remove(userId: number) {
-  const previous = queryClient.getQueryData(usersKey)
+  const previous = queryClient.getQueryData(usersKey);
 
   queryClient.setQueryData(usersKey, (old: Array<{ id: number }> = []) =>
     old.filter((user) => user.id !== userId),
-  )
+  );
 
   deleteUser.mutate(
     { id: userId },
     {
       onError: () => queryClient.setQueryData(usersKey, previous),
     },
-  )
+  );
 }
 </script>
 ```
@@ -92,13 +92,13 @@ function remove(userId: number) {
 If a mutation on one route affects a different route family, call `eden.invalidate()` in `onSuccess`.
 
 ```ts
-const createComment = eden.useMutation(eden.proxy.posts.comments.post)
+const createComment = eden.useMutation(eden.proxy.posts.comments.post);
 
 createComment.mutate(commentData, {
   onSuccess: async () => {
-    await eden.invalidate(eden.proxy.posts)
+    await eden.invalidate(eden.proxy.posts);
   },
-})
+});
 ```
 
 ## Type inspection example
@@ -108,12 +108,12 @@ declare const createUser: {
   mutate: (
     variables: { name: string; email: string },
     options?: {
-      onSuccess?: (data: { id: number; name: string; email: string }) => void
+      onSuccess?: (data: { id: number; name: string; email: string }) => void;
     },
-  ) => void
-}
+  ) => void;
+};
 
-createUser.mutate
+createUser.mutate;
 //         ^?
 ```
 

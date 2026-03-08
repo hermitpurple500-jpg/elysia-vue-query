@@ -4,10 +4,10 @@ on:
   pull_request:
     branches: [main]
     paths-ignore:
-      - 'docs/**'
-      - '*.md'
-      - 'LICENSE'
-      - '.changeset/**'
+      - "docs/**"
+      - "*.md"
+      - "LICENSE"
+      - ".changeset/**"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

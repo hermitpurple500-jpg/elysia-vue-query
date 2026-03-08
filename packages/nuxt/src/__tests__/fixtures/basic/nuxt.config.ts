@@ -1,7 +1,5 @@
-import ElysiaVueQueryModule from '../../../module'
+import ElysiaVueQueryModule from "../../../module";
 
 export default defineNuxtConfig({
-  modules: [
-    ElysiaVueQueryModule,
-  ],
-})
+  modules: [ElysiaVueQueryModule],
+});

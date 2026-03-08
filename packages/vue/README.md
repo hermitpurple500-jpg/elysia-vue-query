@@ -12,14 +12,14 @@ Vue 3 bindings for elysia-vue-query -- type-safe TanStack Query integration with
 
 This is the primary package most Vue applications install. It provides `createEdenQueryHelpers`, a factory that wraps an Eden Treaty client and returns a complete set of query helpers:
 
-| Helper | Description |
-|--------|-------------|
-| `useQuery` | TanStack `useQuery` with automatic key derivation and Eden response unwrapping |
-| `useMutation` | TanStack `useMutation` with automatic subtree cache invalidation |
-| `prefetch` | Prefetch data for SSR hydration via `prefetchQuery` |
-| `invalidate` | Invalidate all queries matching a route subtree |
-| `getKey` | Extract the deterministic query key for manual operations |
-| `proxy` | The enhanced proxy used to reference endpoints |
+| Helper        | Description                                                                    |
+| ------------- | ------------------------------------------------------------------------------ |
+| `useQuery`    | TanStack `useQuery` with automatic key derivation and Eden response unwrapping |
+| `useMutation` | TanStack `useMutation` with automatic subtree cache invalidation               |
+| `prefetch`    | Prefetch data for SSR hydration via `prefetchQuery`                            |
+| `invalidate`  | Invalidate all queries matching a route subtree                                |
+| `getKey`      | Extract the deterministic query key for manual operations                      |
+| `proxy`       | The enhanced proxy used to reference endpoints                                 |
 
 ## Install
 
@@ -31,20 +31,20 @@ bun add @elysia-vue-query/vue @tanstack/vue-query @elysiajs/eden
 
 ```ts
 // lib/eden.ts
-import { createEdenQueryHelpers } from '@elysia-vue-query/vue'
-import { treaty } from '@elysiajs/eden'
-import type { App } from '../server'
+import { createEdenQueryHelpers } from "@elysia-vue-query/vue";
+import { treaty } from "@elysiajs/eden";
+import type { App } from "../server";
 
-const client = treaty<App>('http://localhost:3000')
-export const eden = createEdenQueryHelpers(client)
+const client = treaty<App>("http://localhost:3000");
+export const eden = createEdenQueryHelpers(client);
 ```
 
 ```vue
 <script setup lang="ts">
-import { eden } from '../lib/eden'
+import { eden } from "../lib/eden";
 
-const { data: users, isLoading } = eden.useQuery(eden.proxy.users.get)
-const createUser = eden.useMutation(eden.proxy.users.post)
+const { data: users, isLoading } = eden.useQuery(eden.proxy.users.get);
+const createUser = eden.useMutation(eden.proxy.users.post);
 </script>
 ```
 

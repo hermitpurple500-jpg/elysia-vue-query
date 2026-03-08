@@ -1,6 +1,6 @@
-import ElysiaVueQueryModule from '../../packages/nuxt/src/module'
+import ElysiaVueQueryModule from "../../packages/nuxt/src/module";
 
 export default defineNuxtConfig({
   modules: [ElysiaVueQueryModule],
-  compatibilityDate: 'latest',
-})
+  compatibilityDate: "latest",
+});

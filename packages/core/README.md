@@ -27,15 +27,15 @@ bun add @elysia-vue-query/core
 
 ## Exports
 
-| Export | Description |
-|--------|-------------|
-| `EDEN_ROUTE_SYMBOL` | Unique symbol used to namespace all Eden query keys |
-| `createEdenQueryProxy(client)` | Wraps an Eden client in a segment-tracking proxy |
-| `getRouteMeta(enhanced)` | Extracts `RouteMeta` from a branded proxy |
-| `buildQueryKey(enhanced)` | Builds the canonical query key tuple |
-| `buildMutationInvalidationKey(enhanced)` | Builds a partial key for subtree invalidation |
-| `buildPartialKey(...segments)` | Manually constructs a partial key |
-| `stableSerialize(input)` | Deterministic serialization for cache key params |
+| Export                                   | Description                                         |
+| ---------------------------------------- | --------------------------------------------------- |
+| `EDEN_ROUTE_SYMBOL`                      | Unique symbol used to namespace all Eden query keys |
+| `createEdenQueryProxy(client)`           | Wraps an Eden client in a segment-tracking proxy    |
+| `getRouteMeta(enhanced)`                 | Extracts `RouteMeta` from a branded proxy           |
+| `buildQueryKey(enhanced)`                | Builds the canonical query key tuple                |
+| `buildMutationInvalidationKey(enhanced)` | Builds a partial key for subtree invalidation       |
+| `buildPartialKey(...segments)`           | Manually constructs a partial key                   |
+| `stableSerialize(input)`                 | Deterministic serialization for cache key params    |
 
 ## Documentation
 
