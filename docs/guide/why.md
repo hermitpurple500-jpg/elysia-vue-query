@@ -1,43 +1,66 @@
-# Why elysia-vue-query?
+# Why Elysia Vue Query?
 
-## The glue code problem
+This library exists to remove repetitive server-state glue code from Vue applications that already use Elysia and Eden Treaty.
 
-You have an Elysia backend and a Vue frontend. Eden Treaty gives you a typed client. TanStack Vue Query handles caching and refetching. Two excellent tools — but connecting them is tedious:
+## The baseline problem
+
+Eden Treaty gives you a typed client. TanStack Query gives you caching, retries, and invalidation. The missing layer is the repeated code that joins them:
 
 ```ts
-// you end up writing this for every endpoint
-const { data } = useQuery({
+const users = useQuery({
   queryKey: ['users', 'list'],
   queryFn: async () => {
-    const res = await client.users.get()
-    if (res.error) throw res.error
-    return res.data
+    const response = await client.users.get()
+    if (response.error) {
+      throw response.error
+    }
+    return response.data
   },
 })
 ```
 
-That's three things to get right per endpoint: a query key (which you'll inevitably typo), the Eden response unwrap (every time), and remembering which keys to bust on mutations. It doesn't scale.
+This is workable once. It is fragile when repeated across a real app because you keep rewriting:
 
-## What this library does
+- query keys
+- request wrappers
+- error unwrapping
+- post-mutation invalidation rules
+
+## What this package changes
 
 ```ts
 const eden = createEdenQueryHelpers(client)
 
-const { data } = eden.useQuery(eden.proxy.users.get)
-// key, unwrapping, types — all handled.
-
-const mutation = eden.useMutation(eden.proxy.users.post)
-// after success, users.* queries refetch automatically.
+const users = eden.useQuery(eden.proxy.users.get)
+const createUser = eden.useMutation(eden.proxy.users.post)
 ```
 
-That's it. No strings for keys. No manual unwrapping. No `onSuccess` invalidation boilerplate.
+The repeated parts become runtime behavior instead of copy-pasted convention.
 
-## How it works under the hood
+## Design goals
 
-**Deterministic keys.** A recursive Proxy tracks every property access on `eden.proxy`. `eden.proxy.users.get` produces the key `[Symbol('eden_route'), 'users', 'get']`. Call it with params — `eden.proxy.users.get({ page: 1 })` — and the params get stably serialized (keys sorted, `undefined` stripped) and inserted into the key. Same endpoint, same key. Always.
+### Deterministic cache identity
 
-**Symbol namespacing.** Every key starts with a `unique symbol`, so your eden keys can't collide with any other query keys in your app, even if someone else also uses `['users']`.
+The route path, method, and params become the query key. Equal requests generate equal keys without manual naming.
 
-**Hierarchical invalidation.** When a mutation at `users.post` succeeds, the library invalidates `[Symbol, 'users']` — a prefix that matches `users.get`, `users.get({page:1})`, etc. It uses TanStack's built-in partial key matching, nothing custom.
+### End-to-end type inference
 
-**Zero config.** No providers, no codegen, no config files. You still need `VueQueryPlugin` (you'd set that up anyway). Beyond that, it's one function call.
+Success data, error payloads, and mutation variables are inferred directly from the Eden endpoint signature.
+
+### Predictable invalidation
+
+Writes invalidate by route subtree. A successful `users.post` invalidates the `users` family instead of requiring handwritten `invalidateQueries()` calls.
+
+### Nuxt-ready SSR
+
+The Nuxt module handles QueryClient registration, dehydration, and hydration so SSR behavior is aligned with TanStack Query instead of side-stepping it.
+
+## When it is a good fit
+
+Use it when:
+
+- your backend is already typed with Elysia
+- your frontend uses Vue 3 or Nuxt
+- you want TanStack Query semantics without authoring query keys manually
+
+It is less valuable if you are not using Eden Treaty or if your data layer does not rely on TanStack Query.

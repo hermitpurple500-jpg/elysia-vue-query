@@ -1,12 +1,10 @@
 # Types
 
-All exported types from both packages.
+The public types explain the library's contract better than prose alone, especially when you are integrating it into your own wrappers.
 
-## Core Types
+## Core types
 
 ### `SerializedParam`
-
-Recursive union of JSON-serializable primitives:
 
 ```ts
 type SerializedParam =
@@ -18,9 +16,9 @@ type SerializedParam =
   | { readonly [key: string]: SerializedParam }
 ```
 
-### `RouteMeta`
+Represents the subset of values that can safely participate in query keys.
 
-Metadata extracted from a proxy-enhanced endpoint:
+### `RouteMeta`
 
 ```ts
 interface RouteMeta {
@@ -30,9 +28,9 @@ interface RouteMeta {
 }
 ```
 
-### `EdenQueryKey`
+The metadata stored on the enhanced proxy.
 
-The canonical query key tuple shape:
+### `EdenQueryKey`
 
 ```ts
 type EdenQueryKey = readonly [
@@ -42,9 +40,9 @@ type EdenQueryKey = readonly [
 ]
 ```
 
-### `RouteMetaBrand`
+The canonical tuple returned by `getKey()` and `buildQueryKey()`.
 
-The internal branding type (not typically used directly):
+### `RouteMetaBrand`
 
 ```ts
 type RouteMetaBrand = {
@@ -52,21 +50,17 @@ type RouteMetaBrand = {
 }
 ```
 
-### `EdenEnhancedClient<TClient>`
+The internal type-level brand used to carry route metadata through the proxy.
 
-Type-level intersection that brands a client type with route metadata:
+### `EdenEnhancedClient<TClient>`
 
 ```ts
 type EdenEnhancedClient<TClient> = TClient & RouteMetaBrand
 ```
 
----
-
-## Vue Types
+## Vue types
 
 ### `EdenUseQueryOptions<TData, TError>`
-
-Query options with `queryKey` and `queryFn` excluded (managed internally):
 
 ```ts
 interface EdenUseQueryOptions<TData, TError>
@@ -76,9 +70,9 @@ interface EdenUseQueryOptions<TData, TError>
 }
 ```
 
-### `EdenUseMutationOptions<TData, TError, TVariables>`
+This prevents consumers from bypassing the generated key and function.
 
-Mutation options with `mutationFn` excluded (managed internally):
+### `EdenUseMutationOptions<TData, TError, TVariables>`
 
 ```ts
 interface EdenUseMutationOptions<TData, TError, TVariables>
@@ -89,82 +83,37 @@ interface EdenUseMutationOptions<TData, TError, TVariables>
 
 ### `EdenQueryHelpers<TClient>`
 
-The full helper object returned by `createEdenQueryHelpers()`:
-
 ```ts
 interface EdenQueryHelpers<TClient> {
   readonly proxy: TClient
-
-  useQuery<TEndpoint>(
-    endpoint: TEndpoint | MaybeRef<TEndpoint>,
-    options?: EdenUseQueryOptions<InferEdenData<TEndpoint>, InferEdenError<TEndpoint>>,
-  ): UseQueryReturnType<InferEdenData<TEndpoint>, InferEdenError<TEndpoint>>
-
-  useMutation<TEndpoint>(
-    endpoint: TEndpoint | MaybeRef<TEndpoint>,
-    options?: EdenUseMutationOptions<
-      InferEdenData<TEndpoint>,
-      InferEdenError<TEndpoint>,
-      InferEdenBody<TEndpoint>
-    >,
-  ): UseMutationReturnType<
-    InferEdenData<TEndpoint>,
-    InferEdenError<TEndpoint>,
-    InferEdenBody<TEndpoint>,
-    unknown
-  >
-
-  prefetch<TEndpoint>(
-    endpoint: TEndpoint,
-    queryClient?: QueryClient,
-  ): Promise<void>
-
-  invalidate(
-    endpoint: unknown,
-    queryClient?: QueryClient,
-  ): Promise<void>
-
+  useQuery<TEndpoint>(...args: unknown[]): unknown
+  useMutation<TEndpoint>(...args: unknown[]): unknown
+  prefetch<TEndpoint>(endpoint: TEndpoint, queryClient?: QueryClient): Promise<void>
+  invalidate(endpoint: unknown, queryClient?: QueryClient): Promise<void>
   getKey(endpoint: unknown): EdenQueryKey
 }
 ```
 
----
+This is the umbrella type returned by `createEdenQueryHelpers()`.
 
-## Inference Helpers
-
-These utility types extract data from Eden endpoint signatures:
+## Inference helpers
 
 ### `InferEdenData<T>`
 
-Extracts the success data type from an Eden endpoint:
-
-```ts
-type InferEdenData<T> = T extends (...args: never[]) => Promise<{
-  data: infer TData
-  error: unknown
-  status: number
-}> ? TData : never
-```
+Extracts the success payload from an Eden endpoint.
 
 ### `InferEdenError<T>`
 
-Extracts the error type from an Eden endpoint:
-
-```ts
-type InferEdenError<T> = T extends (...args: never[]) => Promise<{
-  data: unknown
-  error: infer TError
-  status: number
-}> ? TError : never
-```
+Extracts the error payload from an Eden endpoint.
 
 ### `InferEdenBody<T>`
 
-Extracts the request body type from an Eden endpoint:
+Extracts the body input type for write endpoints.
 
-```ts
-type InferEdenBody<T> = T extends (body: infer TBody) => Promise<{
-  data: unknown
-  error: unknown
-}> ? TBody : void
-```
+## Practical reading
+
+If you only need one mental model, use this one:
+
+- `proxy` captures route structure
+- `EdenQueryKey` is the cache identity
+- inference helpers derive success, error, and body types from the endpoint signature

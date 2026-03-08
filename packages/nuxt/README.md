@@ -1,84 +1,52 @@
-<!--
-Get your module up and running quickly.
+# @elysia-vue-query/nuxt
 
-Find and replace all on all files (CMD+SHIFT+F):
-- Name: My Module
-- Package name: my-module
-- Description: My new Nuxt module
--->
+Nuxt module for elysia-vue-query with SSR dehydration and hydration.
 
-# My Module
+[![npm](https://img.shields.io/npm/v/@elysia-vue-query/nuxt?style=flat-square)](https://www.npmjs.com/package/@elysia-vue-query/nuxt)
+[![License](https://img.shields.io/github/license/elysia-vue-query/elysia-vue-query?style=flat-square)](https://opensource.org/licenses/MIT)
+[![Nuxt](https://img.shields.io/badge/Nuxt-020420?style=flat-square&logo=nuxt)](https://nuxt.com)
 
-[![npm version][npm-version-src]][npm-version-href]
-[![npm downloads][npm-downloads-src]][npm-downloads-href]
-[![License][license-src]][license-href]
-[![Nuxt][nuxt-src]][nuxt-href]
+---
 
-My new Nuxt module for doing amazing things.
+## Role in the Monorepo
 
-- [✨ &nbsp;Release Notes](/CHANGELOG.md)
-<!-- - [🏀 Online playground](https://stackblitz.com/github/your-org/my-module?file=playground%2Fapp.vue) -->
-<!-- - [📖 &nbsp;Documentation](https://example.com) -->
+This package is a Nuxt module that provides zero-config integration with `@elysia-vue-query/vue`. It handles the parts that are tedious to set up manually in a Nuxt application:
 
-## Features
+- **Automatic `VueQueryPlugin` registration** -- No need to create a Nuxt plugin for TanStack Query.
+- **SSR dehydration / hydration** -- Query state is serialized on the server via the `app:rendered` hook and rehydrated on the client via the `app:created` hook, using Nuxt's `useState` transport.
+- **Auto-imports** -- `createEdenQueryHelpers` is available in any component or composable without explicit imports.
 
-<!-- Highlight some of the features your module provide here -->
-- ⛰ &nbsp;Foo
-- 🚠 &nbsp;Bar
-- 🌲 &nbsp;Baz
-
-## Quick Setup
-
-Install the module to your Nuxt application with one command:
+## Install
 
 ```bash
-npx nuxt module add my-module
+bun add @elysia-vue-query/nuxt
 ```
 
-That's it! You can now use My Module in your Nuxt app ✨
+## Setup
 
+```ts
+// nuxt.config.ts
+export default defineNuxtConfig({
+  modules: ['@elysia-vue-query/nuxt'],
+})
+```
 
-## Contribution
+Then create a composable for your Eden client:
 
-<details>
-  <summary>Local development</summary>
-  
-  ```bash
-  # Install dependencies
-  npm install
-  
-  # Generate type stubs
-  npm run dev:prepare
-  
-  # Develop with the playground
-  npm run dev
-  
-  # Build the playground
-  npm run dev:build
-  
-  # Run ESLint
-  npm run lint
-  
-  # Run Vitest
-  npm run test
-  npm run test:watch
-  
-  # Release new version
-  npm run release
-  ```
+```ts
+// composables/eden.ts
+import { treaty } from '@elysiajs/eden'
+import type { App } from '../server'
 
-</details>
+const client = treaty<App>('http://localhost:3000')
+export const eden = createEdenQueryHelpers(client) // auto-imported
+```
 
+## Documentation
 
-<!-- Badges -->
-[npm-version-src]: https://img.shields.io/npm/v/my-module/latest.svg?style=flat&colorA=020420&colorB=00DC82
-[npm-version-href]: https://npmjs.com/package/my-module
+Full SSR guide, hydration details, and configuration options:
+**[elysia-vue-query.github.io/elysia-vue-query/guide/ssr](https://elysia-vue.pages.dev/guide/ssr)**
 
-[npm-downloads-src]: https://img.shields.io/npm/dm/my-module.svg?style=flat&colorA=020420&colorB=00DC82
-[npm-downloads-href]: https://npm.chart.dev/my-module
+## License
 
-[license-src]: https://img.shields.io/npm/l/my-module.svg?style=flat&colorA=020420&colorB=00DC82
-[license-href]: https://npmjs.com/package/my-module
-
-[nuxt-src]: https://img.shields.io/badge/Nuxt-020420?logo=nuxt
-[nuxt-href]: https://nuxt.com
+[MIT](../../LICENSE)

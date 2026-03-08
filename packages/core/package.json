@@ -1,9 +1,21 @@
 {
   "name": "@elysia-vue-query/core",
   "version": "0.1.0",
+  "description": "Proxy engine, key builders, and serialization for elysia-vue-query",
   "type": "module",
   "author": "Saku Shiina <shiinasaku@proton.me>",
   "license": "MIT",
+  "homepage": "https://elysia-vue.pages.dev",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/elysia-vue-query/elysia-vue-query.git",
+    "directory": "packages/core"
+  },
+  "keywords": ["elysia", "eden", "vue", "tanstack-query", "vue-query", "typescript"],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.mts",
@@ -25,7 +37,7 @@
     "dev": "tsdown --watch"
   },
   "devDependencies": {
-    "tsdown": "^0.20.3",
+    "tsdown": "^0.21.0",
     "typescript": "^5.9.3"
   }
 }

@@ -1,6 +1,6 @@
 # Core API
 
-Framework-agnostic primitives. You usually won't import these directly — the vue package re-exports what you need.
+The core package contains the framework-agnostic primitives that power the Vue helpers.
 
 ## `EDEN_ROUTE_SYMBOL`
 
@@ -8,16 +8,7 @@ Framework-agnostic primitives. You usually won't import these directly — the v
 import { EDEN_ROUTE_SYMBOL } from '@elysia-vue-query/core'
 ```
 
-A `unique symbol` used to namespace all eden query keys. Prevents collisions with any other query keys in your application.
-
-```ts
-const key = buildQueryKey(proxy.users.get)
-key[0] === EDEN_ROUTE_SYMBOL // true
-```
-
-Also exported as `routeSymbol` (alias).
-
----
+Every generated query key starts with this unique symbol. That makes collisions with unrelated query keys effectively impossible.
 
 ## `createEdenQueryProxy(client)`
 
@@ -25,33 +16,20 @@ Also exported as `routeSymbol` (alias).
 function createEdenQueryProxy<TClient>(client: TClient): TClient
 ```
 
-Wraps an Eden Treaty client in a recursive Proxy that tracks route segment access, HTTP methods, and parameters via Symbol branding.
+Wraps the Eden client in a recursive proxy that records:
 
-### Parameters
+- route segments
+- HTTP method
+- serialized params
 
-| Param | Type | Description |
-|-------|------|-------------|
-| `client` | `TClient` | An Eden Treaty client instance |
+Examples of what gets tracked:
 
-### Returns
-
-`TClient` — enhanced with internal Symbol metadata for key generation.
-
-### Behavior
-
-| Access Pattern | Tracked As |
-|---------------|------------|
-| `proxy.users` | Segment: `'users'` |
-| `proxy.users.posts` | Segments: `['users', 'posts']` |
-| `proxy.users.get` | Segments: `['users']`, Method: `'get'` |
-| `proxy.users.get({ page: 1 })` | Segments: `['users']`, Method: `'get'`, Params: `{ page: 1 }` |
-
-### HTTP Methods
-
-The following property names are recognized as HTTP methods:
-`get`, `post`, `put`, `patch`, `delete`, `head`, `options`
-
----
+| Access pattern | Recorded metadata |
+| --- | --- |
+| `proxy.users` | `segments: ['users']` |
+| `proxy.users.posts` | `segments: ['users', 'posts']` |
+| `proxy.users.get` | `segments: ['users']`, `method: 'get'` |
+| `proxy.users.get({ page: 1 })` | `segments: ['users']`, `method: 'get'`, `params: { page: 1 }` |
 
 ## `getRouteMeta(enhanced)`
 
@@ -59,30 +37,7 @@ The following property names are recognized as HTTP methods:
 function getRouteMeta(enhanced: unknown): RouteMeta | undefined
 ```
 
-Extracts route metadata from a Symbol-branded proxy.
-
-### Parameters
-
-| Param | Type | Description |
-|-------|------|-------------|
-| `enhanced` | `unknown` | A proxy-enhanced value |
-
-### Returns
-
-`RouteMeta | undefined` — returns `undefined` for non-proxy values.
-
-```ts
-const meta = getRouteMeta(proxy.users.get)
-// → { segments: ['users'], method: 'get' }
-
-const metaWithParams = getRouteMeta(proxy.users.get({ page: 1 }))
-// → { segments: ['users'], method: 'get', params: { page: 1 } }
-
-getRouteMeta('not a proxy')
-// → undefined
-```
-
----
+Extracts the branded metadata from a proxied endpoint. Returns `undefined` for non-enhanced values.
 
 ## `buildQueryKey(enhanced)`
 
@@ -90,52 +45,34 @@ getRouteMeta('not a proxy')
 function buildQueryKey(enhanced: unknown): EdenQueryKey
 ```
 
-Constructs the canonical query key tuple from a branded proxy.
+Constructs the canonical key shape:
 
-### Key Format
-
-```
+```text
 [EDEN_ROUTE_SYMBOL, ...segments, serializedParams?, method?]
 ```
 
-### Examples
+Examples:
 
 ```ts
 buildQueryKey(proxy.users.get)
-// → [Symbol, 'users', 'get']
-
 buildQueryKey(proxy.users.get({ page: 1, limit: 20 }))
-// → [Symbol, 'users', { limit: 20, page: 1 }, 'get']
-
 buildQueryKey(proxy.users.posts.comments.get)
-// → [Symbol, 'users', 'posts', 'comments', 'get']
 ```
-
-### Throws
-
-`Error` if the input doesn't have valid route metadata.
-
----
 
 ## `buildMutationInvalidationKey(enhanced)`
 
 ```ts
-function buildMutationInvalidationKey(enhanced: unknown): readonly [typeof EDEN_ROUTE_SYMBOL, ...string[]]
+function buildMutationInvalidationKey(
+  enhanced: unknown,
+): readonly [typeof EDEN_ROUTE_SYMBOL, ...string[]]
 ```
 
-Constructs a partial key for subtree invalidation — **segments only**, no method or params.
+Builds a prefix key for invalidation. It intentionally excludes method and params.
 
 ```ts
 buildMutationInvalidationKey(proxy.users.post)
-// → [Symbol, 'users']
-
-buildMutationInvalidationKey(proxy.users.posts.post)
-// → [Symbol, 'users', 'posts']
+// => [EDEN_ROUTE_SYMBOL, 'users']
 ```
-
-This key matches all queries under the same route prefix via TanStack's `partialDeepEqual`.
-
----
 
 ## `buildPartialKey(...segments)`
 
@@ -143,17 +80,7 @@ This key matches all queries under the same route prefix via TanStack's `partial
 function buildPartialKey(...segments: string[]): readonly [typeof EDEN_ROUTE_SYMBOL, ...string[]]
 ```
 
-Manually construct a partial key for custom invalidation patterns.
-
-```ts
-buildPartialKey('users')
-// → [Symbol, 'users']
-
-buildPartialKey('users', 'posts')
-// → [Symbol, 'users', 'posts']
-```
-
----
+Use this when you want custom invalidation logic while staying inside the same symbol namespace.
 
 ## `stableSerialize(input)`
 
@@ -161,23 +88,16 @@ buildPartialKey('users', 'posts')
 function stableSerialize(input: unknown): SerializedParam | undefined
 ```
 
-Deterministic serialization for query key params.
+This serializer is what makes equal param objects produce equal query keys.
 
-### Behavior
+### Rules
 
-- Sorts object keys alphabetically (recursive)
-- Filters `undefined` values from objects
-- Passes through primitives (`string`, `number`, `boolean`, `null`)
-- Processes arrays element-by-element (preserves order)
-- Throws `TypeError` on `Date`, `Set`, `Map`, `Function`
+- object keys are sorted recursively
+- `undefined` object fields are removed
+- arrays keep order
+- primitives pass through unchanged
+- unsupported runtime values such as `Date`, `Map`, `Set`, and functions throw
 
-### Examples
+### Why it matters
 
-```ts
-stableSerialize({ z: 1, a: 2 })       // → { a: 2, z: 1 }
-stableSerialize({ b: 1, a: undefined }) // → { b: 1 }
-stableSerialize(undefined)             // → undefined
-stableSerialize(42)                    // → 42
-stableSerialize([3, 1, 2])            // → [3, 1, 2]
-stableSerialize(new Date())           // TypeError!
-```
+Without stable serialization, route params that are semantically equal could still miss the cache because of object key ordering differences.

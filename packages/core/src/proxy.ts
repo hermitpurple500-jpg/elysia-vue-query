@@ -14,7 +14,7 @@ export function getRouteMeta(enhanced: unknown): RouteMeta | undefined {
 }
 
 function resolveTarget(client: unknown, key: string): unknown {
-  if (client != null && typeof client === 'object') {
+  if (client != null && (typeof client === 'object' || typeof client === 'function')) {
     return (client as Record<string, unknown>)[key]
   }
   return undefined

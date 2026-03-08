@@ -1,6 +1,6 @@
 # Vue Helpers API
 
-The main package you'll interact with.
+The Vue package is the primary surface most applications interact with.
 
 ## `createEdenQueryHelpers(client)`
 
@@ -8,43 +8,33 @@ The main package you'll interact with.
 function createEdenQueryHelpers<TClient>(client: TClient): EdenQueryHelpers<TClient>
 ```
 
-Factory function that creates the full set of query helpers from an Eden Treaty client.
+Creates the typed helper bundle around an Eden Treaty client.
 
-### Parameters
+### What it returns
 
-| Param | Type | Description |
-|-------|------|-------------|
-| `client` | `TClient` | An Eden Treaty client instance |
+| Property | Purpose |
+| --- | --- |
+| `proxy` | Route-aware proxy used to reference endpoints |
+| `useQuery` | TanStack Query read helper with automatic key generation |
+| `useMutation` | TanStack Mutation helper with automatic subtree invalidation |
+| `prefetch` | Server-side cache population helper |
+| `invalidate` | Manual invalidation by route subtree |
+| `getKey` | Returns the canonical deterministic query key |
 
-### Returns
+## `proxy`
 
-`EdenQueryHelpers<TClient>` with the following properties:
-
-| Property | Description |
-|----------|-------------|
-| `proxy` | Enhanced proxy wrapping your Eden client |
-| `useQuery` | TanStack `useQuery` with auto key + response unwrap |
-| `useMutation` | TanStack `useMutation` with auto invalidation |
-| `prefetch` | SSR-compatible `prefetchQuery` wrapper |
-| `invalidate` | Manual subtree cache invalidation |
-| `getKey` | Extract the deterministic query key |
-
----
-
-## `eden.proxy`
-
-The enhanced proxy wrapping your Eden client. Use it to reference endpoints:
+The `proxy` mirrors your Eden client shape, but every property access records route metadata used later for key generation.
 
 ```ts
-eden.proxy.users.get            // GET /users
-eden.proxy.users.post           // POST /users
-eden.proxy.users.get({ page: 1 }) // GET /users?page=1
-eden.proxy.posts.get            // GET /posts
+eden.proxy.users.get
+eden.proxy.users.posts.get
+eden.proxy.users.get({ page: 1 })
+eden.proxy.users['42'].profile.get
 ```
 
----
+The proxy is how the library avoids handwritten string query keys.
 
-## `eden.useQuery(endpoint, options?)`
+## `useQuery(endpoint, options?)`
 
 ```ts
 function useQuery<TEndpoint>(
@@ -53,33 +43,37 @@ function useQuery<TEndpoint>(
 ): UseQueryReturnType<TData, TError>
 ```
 
-Wraps TanStack's `useQuery` with automatic key generation and Eden response normalization.
+### Behavior
 
-### Parameters
-
-| Param | Type | Description |
-|-------|------|-------------|
-| `endpoint` | `TEndpoint \| MaybeRef<TEndpoint>` | A proxy endpoint or ref to one |
-| `options` | `EdenUseQueryOptions` | TanStack Query options (except `queryKey`, `queryFn`) |
-
-### Returns
-
-`UseQueryReturnType<TData, TError>` — standard TanStack Query return with `data`, `isLoading`, `error`, etc.
+- derives the query key from the endpoint reference
+- calls the underlying Eden endpoint
+- throws Eden errors into TanStack's error channel
+- returns inferred success data
 
 ### Example
 
-```vue
-<script setup lang="ts">
-const { data, isLoading, error } = eden.useQuery(eden.proxy.users.get, {
-  staleTime: 60_000,
-  enabled: isAuthenticated,
-})
-</script>
+```ts twoslash
+declare const eden: {
+  proxy: {
+    users: {
+      get: () => Promise<{
+        data: Array<{ id: number; name: string }>
+        error: null
+        status: 200
+      }>
+    }
+  }
+  useQuery: <T>(endpoint: T) => {
+    data: { value: Array<{ id: number; name: string }> | undefined }
+  }
+}
+
+const users = eden.useQuery(eden.proxy.users.get)
+users.data.value
+//    ^?
 ```
 
----
-
-## `eden.useMutation(endpoint, options?)`
+## `useMutation(endpoint, options?)`
 
 ```ts
 function useMutation<TEndpoint>(
@@ -88,46 +82,21 @@ function useMutation<TEndpoint>(
 ): UseMutationReturnType<TData, TError, TVariables, unknown>
 ```
 
-Wraps TanStack's `useMutation` with automatic subtree cache invalidation.
+### Behavior
 
-### Parameters
-
-| Param | Type | Description |
-|-------|------|-------------|
-| `endpoint` | `TEndpoint \| MaybeRef<TEndpoint>` | A proxy endpoint (typically `.post`, `.put`, `.delete`) |
-| `options` | `EdenUseMutationOptions` | TanStack Mutation options (except `mutationFn`) |
-
-### Invalidation Behavior
-
-After a successful mutation, all queries matching the route's parent segments are invalidated.
-
-```ts
-eden.useMutation(eden.proxy.users.post)
-// Success → invalidates [Symbol, 'users']
-
-eden.useMutation(eden.proxy.users.posts.post)
-// Success → invalidates [Symbol, 'users', 'posts']
-```
+- infers mutation variables from the endpoint body
+- unwraps the Eden response
+- invalidates the route subtree after success
 
 ### Example
 
-```vue
-<script setup lang="ts">
+```ts
 const createUser = eden.useMutation(eden.proxy.users.post)
-
-createUser.mutate(
-  { name: 'Alice', email: 'alice@example.com' },
-  {
-    onSuccess: (data) => console.log('Created:', data.id),
-    onError: (err) => console.error(err),
-  }
-)
-</script>
 ```
 
----
+`eden.proxy.users.post` invalidates the `users` subtree on success.
 
-## `eden.prefetch(endpoint, queryClient?)`
+## `prefetch(endpoint, queryClient?)`
 
 ```ts
 function prefetch<TEndpoint>(
@@ -136,25 +105,9 @@ function prefetch<TEndpoint>(
 ): Promise<void>
 ```
 
-Prefetch data using TanStack's `prefetchQuery` for SSR hydration.
+Populates a QueryClient ahead of hydration using the same deterministic key logic as `useQuery()`.
 
-### Parameters
-
-| Param | Type | Description |
-|-------|------|-------------|
-| `endpoint` | `TEndpoint` | A proxy endpoint |
-| `queryClient` | `QueryClient` | Optional — uses `useQueryClient()` if not provided |
-
-### Example
-
-```ts
-// Server-side (Nuxt, etc.)
-await eden.prefetch(eden.proxy.users.get, queryClient)
-```
-
----
-
-## `eden.invalidate(endpoint, queryClient?)`
+## `invalidate(endpoint, queryClient?)`
 
 ```ts
 function invalidate(
@@ -163,45 +116,23 @@ function invalidate(
 ): Promise<void>
 ```
 
-Invalidate all queries matching the endpoint's route subtree.
-
-### Parameters
-
-| Param | Type | Description |
-|-------|------|-------------|
-| `endpoint` | `unknown` | A proxy endpoint (any depth) |
-| `queryClient` | `QueryClient` | Optional — uses `useQueryClient()` if not provided |
-
-### Example
+Invalidates every cached query that shares the endpoint's route prefix.
 
 ```ts
-// Invalidate all user-related queries
 await eden.invalidate(eden.proxy.users)
-
-// Invalidate only user posts
 await eden.invalidate(eden.proxy.users.posts)
 ```
 
----
-
-## `eden.getKey(endpoint)`
+## `getKey(endpoint)`
 
 ```ts
 function getKey(endpoint: unknown): EdenQueryKey
 ```
 
-Extract the stable, deterministic query key from a proxy endpoint.
-
-### Returns
-
-`EdenQueryKey` — `readonly [typeof EDEN_ROUTE_SYMBOL, ...string[], ...[SerializedParam?, string?]]`
-
-### Example
+Useful when you want to interact with the QueryClient directly.
 
 ```ts
-eden.getKey(eden.proxy.users.get)
-// → [Symbol('eden_route'), 'users', 'get']
-
-eden.getKey(eden.proxy.users.get({ page: 1 }))
-// → [Symbol('eden_route'), 'users', { page: 1 }, 'get']
+const key = eden.getKey(eden.proxy.users.get({ page: 1 }))
 ```
+
+For the exact tuple shape, see [Types](/api/types).

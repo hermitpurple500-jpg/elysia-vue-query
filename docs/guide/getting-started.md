@@ -1,130 +1,163 @@
 # Getting Started
 
-A walkthrough for adding elysia-vue-query to a Vue 3 app with an Elysia backend.
+This guide walks through the standard setup for a Vue app: create the client, wrap it with helpers, fetch data, then perform a mutation.
 
-## Prerequisites
+## 1. Register TanStack Query once
 
-- [Bun](https://bun.sh) or Node.js 18+
-- An [Elysia](https://elysiajs.com) server
-- A Vue 3 app with [VueQueryPlugin](https://tanstack.com/query/latest/docs/vue/overview) installed
-
-## 1. Install
-
-::: code-group
-
-```bash [bun]
-bun add @elysia-vue-query/vue @tanstack/vue-query @elysiajs/eden
-```
-
-```bash [pnpm]
-pnpm add @elysia-vue-query/vue @tanstack/vue-query @elysiajs/eden
-```
-
-```bash [npm]
-npm install @elysia-vue-query/vue @tanstack/vue-query @elysiajs/eden
-```
-
-:::
-
-`@elysia-vue-query/core` comes along as a dependency — you don't install it separately.
-
-## 2. Export your server type
-
-Eden Treaty needs the inferred type of your Elysia app. Export it from wherever you define your server:
-
-```ts
-// server.ts
-import { Elysia, t } from 'elysia'
-
-const app = new Elysia()
-  .get('/users', () => db.users.findMany(), {
-    response: t.Array(t.Object({
-      id: t.Number(),
-      name: t.String(),
-      email: t.String(),
-    })),
-  })
-  .post('/users', ({ body }) => db.users.create(body), {
-    body: t.Object({
-      name: t.String(),
-      email: t.String({ format: 'email' }),
-    }),
-  })
-  .listen(3000)
-
-export type App = typeof app // ← this is the important line
-```
-
-## 3. Set up Vue Query
-
-If you haven't already:
-
-```ts
-// main.ts
+```ts [src/main.ts]
 import { createApp } from 'vue'
-import { VueQueryPlugin } from '@tanstack/vue-query'
+import { QueryClient, VueQueryPlugin } from '@tanstack/vue-query'
 import App from './App.vue'
 
-createApp(App)
-  .use(VueQueryPlugin, {
-    queryClientConfig: {
-      defaultOptions: { queries: { staleTime: 5_000 } },
+const app = createApp(App)
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 30_000,
     },
-  })
-  .mount('#app')
+  },
+})
+
+app.use(VueQueryPlugin, { queryClient })
+app.mount('#app')
 ```
 
-## 4. Create the helpers
+## 2. Create typed Eden helpers
 
-One file, used everywhere:
+```ts twoslash [src/lib/eden.ts]
+interface User {
+  id: number
+  name: string
+  email: string
+}
 
-```ts
-// lib/eden.ts
-import { createEdenQueryHelpers } from '@elysia-vue-query/vue'
-import { treaty } from '@elysiajs/eden'
-import type { App } from '../server'
+interface AppClient {
+  users: {
+    get: () => Promise<{
+      data: User[]
+      error: null
+      status: 200
+    }>
+    post: (body: { name: string; email: string }) => Promise<{
+      data: User
+      error: null
+      status: 201
+    }>
+  }
+}
 
-const client = treaty<App>('http://localhost:3000')
+declare function createEdenQueryHelpers(client: AppClient): {
+  proxy: AppClient
+  useQuery(endpoint: AppClient['users']['get']): {
+    data: { value: User[] | undefined }
+  }
+  useMutation(endpoint: AppClient['users']['post']): {
+    mutate: (body: { name: string; email: string }) => void
+  }
+}
+
+declare const client: AppClient
 export const eden = createEdenQueryHelpers(client)
+
+const query = eden.useQuery(eden.proxy.users.get)
+query.data
+//   ^?
+
+const mutation = eden.useMutation(eden.proxy.users.post)
+mutation.mutate
+//       ^?
 ```
 
-## 5. Query and mutate
+The `twoslash` marker enables VS Code-style hover information in the docs. Hover `query.data` or `mutation.mutate` in the rendered page to inspect the inferred types.
 
-```vue
+## 3. Read data in a component
+
+Pass the endpoint reference itself, not the result of calling it.
+
+```vue [src/components/UserList.vue]
 <script setup lang="ts">
 import { eden } from '../lib/eden'
 
-const { data: users, isLoading, error } = eden.useQuery(eden.proxy.users.get)
+const { data: users, isLoading, error } = eden.useQuery(eden.proxy.users.get, {
+  staleTime: 60_000,
+})
+</script>
+
+<template>
+  <p v-if="isLoading">Loading users...</p>
+  <p v-else-if="error">Request failed: {{ error.message }}</p>
+
+  <ul v-else>
+    <li v-for="user in users" :key="user.id">
+      {{ user.name }} · {{ user.email }}
+    </li>
+  </ul>
+</template>
+```
+
+What happens under the hood:
+
+- the route path becomes the query key
+- the Eden response is unwrapped automatically
+- the component receives the inferred success data type
+
+## 4. Write data with automatic invalidation
+
+```vue [src/components/CreateUser.vue]
+<script setup lang="ts">
+import { ref } from 'vue'
+import { eden } from '../lib/eden'
+
+const name = ref('')
+const email = ref('')
 
 const createUser = eden.useMutation(eden.proxy.users.post)
 
-function handleSubmit(name: string, email: string) {
-  createUser.mutate({ name, email })
-  // users.get refetches automatically after this succeeds
+function submit() {
+  createUser.mutate(
+    { name: name.value, email: email.value },
+    {
+      onSuccess: () => {
+        name.value = ''
+        email.value = ''
+      },
+    },
+  )
 }
 </script>
 
 <template>
-  <div v-if="isLoading">Loading...</div>
-  <div v-else-if="error">{{ error.message }}</div>
-  <ul v-else>
-    <li v-for="user in users" :key="user.id">
-      {{ user.name }} — {{ user.email }}
-    </li>
-  </ul>
-
-  <button
-    @click="handleSubmit('Alice', 'alice@example.com')"
-    :disabled="createUser.isPending.value"
-  >
-    Add User
-  </button>
+  <form @submit.prevent="submit">
+    <input v-model="name" placeholder="Name" />
+    <input v-model="email" placeholder="Email" />
+    <button :disabled="createUser.isPending.value" type="submit">
+      {{ createUser.isPending.value ? 'Saving...' : 'Create user' }}
+    </button>
+  </form>
 </template>
 ```
 
-## What's next
+When the mutation succeeds, all `users.*` queries are invalidated automatically.
 
-- [Query Keys](/guide/query-keys) — how they're generated and why they're stable
-- [Mutations](/guide/mutations) — automatic invalidation in detail
-- [SSR](/guide/ssr) — prefetching for Nuxt
-- [API Reference](/api/vue) — full function signatures
+## 5. Use parameters when needed
+
+```ts twoslash
+type UserDetailsRoute = (params: { id: string }) => Promise<{
+  data: { id: string; name: string }
+  error: null
+  status: 200
+}>
+
+declare const route: UserDetailsRoute
+
+route
+// ^?
+```
+
+In the real helper API, calling `eden.proxy.users.get({ page: 1 })` or `eden.proxy.users[id].profile.get` feeds those params into both the request and the deterministic query key.
+
+## Next steps
+
+- [Queries](/guide/queries) for filters, refs, and TanStack options
+- [Mutations](/guide/mutations) for callbacks and optimistic updates
+- [Nuxt SSR](/guide/nuxt-ssr) if you want server rendering without plugin boilerplate

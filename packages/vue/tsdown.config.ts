@@ -3,7 +3,14 @@ import { defineConfig } from 'tsdown'
 export default defineConfig({
   entry: ['./src/index.ts'],
   format: ['esm', 'cjs'],
-  dts: true,
+  dts: { sourcemap: true },
   clean: true,
-  external: ['vue', '@tanstack/vue-query', '@elysia-vue-query/core'],
+  treeshake: true,
+  sourcemap: true,
+  deps: {
+    neverBundle: ['vue', '@tanstack/vue-query', '@elysia-vue-query/core'],
+  },
+  publint: 'ci-only',
+  attw: 'ci-only',
+  failOnWarn: 'ci-only',
 })

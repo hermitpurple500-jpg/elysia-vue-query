@@ -1,79 +1,60 @@
 # Query Keys
 
-TanStack Query's caching revolves around keys. elysia-vue-query makes them automatic.
+TanStack Query caches by key. `elysia-vue-query` generates those keys from the route structure so you do not have to hand-maintain string arrays.
 
-## How it works
+## Basic shape
 
-When you write `eden.proxy.users.get`, a recursive Proxy records each property access. The resulting key:
-
-```
-[EDEN_ROUTE_SYMBOL, 'users', 'get']
- ──────┬─────────   ──┬──   ──┬──
-   collision-proof   route   HTTP
-   namespace         segment  method
+```ts
+eden.proxy.users.get
+// => [EDEN_ROUTE_SYMBOL, 'users', 'get']
 ```
 
-Add params and they get inserted before the method:
+When params are present, they are inserted before the method:
 
 ```ts
 eden.proxy.users.get({ page: 1, limit: 20 })
-// → [Symbol('eden_route'), 'users', { limit: 20, page: 1 }, 'get']
-//                                    ↑ keys sorted, always
+// => [EDEN_ROUTE_SYMBOL, 'users', { limit: 20, page: 1 }, 'get']
 ```
 
-## Stable param serialization
+## Why this is stable
 
-Object keys are sorted alphabetically so the same logical query always hits the same cache entry:
-
-```ts
-// identical keys — order doesn't matter
-eden.proxy.users.get({ z: 1, a: 2 })
-eden.proxy.users.get({ a: 2, z: 1 })
-// both → [Symbol, 'users', { a: 2, z: 1 }, 'get']
-```
-
-`undefined` values are stripped. Non-serializable types (`Date`, `Set`, `Map`, `Function`) throw a `TypeError` at key-construction time so you catch the mistake early.
-
-## Symbol namespacing
-
-The first element is a `unique symbol` — not a string. This means eden keys can never collide with any other query keys, even if something else in your app also queries `['users']`.
+- every key starts with `EDEN_ROUTE_SYMBOL`
+- object params are serialized with sorted keys
+- `undefined` object fields are removed
+- equal requests produce equal keys even if object field order differs
 
 ## Nested routes
 
-Deep paths produce multi-segment keys:
-
 ```ts
 eden.proxy.users.posts.comments.get
-// → [Symbol, 'users', 'posts', 'comments', 'get']
+// => [EDEN_ROUTE_SYMBOL, 'users', 'posts', 'comments', 'get']
 ```
 
-## Partial key matching
+## Manual key access
 
-TanStack Query matches keys by prefix. This is what makes invalidation work:
-
-```
-Key prefix: [Symbol, 'users']
-  ✓  [Symbol, 'users', 'get']
-  ✓  [Symbol, 'users', { page: 1 }, 'get']
-  ✓  [Symbol, 'users', 'posts', 'get']
-  ✗  [Symbol, 'posts', 'get']
-```
-
-## Extracting keys
-
-For manual queryClient operations, use `getKey()`:
+Use `getKey()` when you need to talk to `queryClient` directly.
 
 ```ts
 const key = eden.getKey(eden.proxy.users.get)
+
 queryClient.getQueryData(key)
 queryClient.setQueryData(key, newData)
 ```
 
-Or `buildPartialKey()` from the core package for prefix-matching:
+## Prefix keys
+
+For subtree invalidation or other prefix-matching operations, use `buildPartialKey()` from core.
 
 ```ts
 import { buildPartialKey } from '@elysia-vue-query/core'
 
 queryClient.invalidateQueries({
-  queryKey: buildPartialKey('users')
+  queryKey: buildPartialKey('users'),
 })
+```
+
+## Related guides
+
+- [Cache Invalidation](/guide/cache-invalidation)
+- [Serialization](/guide/serialization)
+- [Custom Key Patterns](/guide/custom-keys)

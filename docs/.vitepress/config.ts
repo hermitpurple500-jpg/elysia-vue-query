@@ -1,64 +1,105 @@
 import { defineConfig } from 'vitepress'
+import { transformerTwoslash } from '@shikijs/vitepress-twoslash'
+import { createFileSystemTypesCache } from '@shikijs/vitepress-twoslash/cache-fs'
+import tailwindcss from '@tailwindcss/vite'
+import { groupIconMdPlugin, groupIconVitePlugin } from 'vitepress-plugin-group-icons'
 
 export default defineConfig({
-  title: 'elysia-vue-query',
-  description: 'Type-safe integration between Elysia Eden Treaty and TanStack Vue Query',
+  lang: 'en-US',
+  title: 'Elysia Vue Query',
+  description: 'Deterministic, type-safe TanStack Query transport layer for ElysiaJS Eden Treaty. Built for Vue 3 and Nuxt.',
+  cleanUrls: true,
+  srcExclude: ['components/**'],
+  sitemap: {
+    hostname: 'https://elysia-vue.pages.dev',
+  },
 
   head: [
-    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/logo.svg' }],
-    ['meta', { name: 'theme-color', content: '#42b883' }],
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/logo_v.svg' }],
+    ['meta', { name: 'theme-color', content: '#f06292' }],
     ['meta', { property: 'og:type', content: 'website' }],
-    ['meta', { property: 'og:title', content: 'elysia-vue-query' }],
-    ['meta', { property: 'og:description', content: 'Type-safe Eden Treaty + TanStack Vue Query — zero-config query keys, automatic cache invalidation.' }],
-    ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }],
-    ['link', { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' }],
-    ['link', { href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap', rel: 'stylesheet' }],
+    ['meta', { property: 'og:title', content: 'Elysia Vue Query' }],
+    ['meta', { property: 'og:description', content: 'Deterministic, type-safe TanStack Query transport layer for ElysiaJS Eden Treaty. Built for Vue 3 and Nuxt.' }],
+    ['meta', { property: 'og:url', content: 'https://elysia-vue.pages.dev' }],
+    ['meta', { name: 'twitter:card', content: 'summary' }],
+    ['meta', { name: 'twitter:title', content: 'Elysia Vue Query' }],
+    ['meta', { name: 'twitter:description', content: 'Deterministic, type-safe TanStack Query transport layer for ElysiaJS Eden Treaty.' }],
   ],
 
+  lastUpdated: true,
+
+  vite: {
+    plugins: [
+      tailwindcss(),
+      groupIconVitePlugin(),
+    ],
+  },
+
+  markdown: {
+    config(md) {
+      md.use(groupIconMdPlugin, {
+        titleBar: {
+          includeSnippet: true,
+        },
+      })
+    },
+    theme: {
+      light: 'vitesse-light',
+      dark: 'vitesse-dark',
+    },
+    codeTransformers: [
+      transformerTwoslash({
+        typesCache: createFileSystemTypesCache(),
+      }),
+    ],
+  },
+
   themeConfig: {
-    logo: '/logo.svg',
-    siteTitle: 'elysia-vue-query',
+    logo: { src: '/logo_v.svg', alt: 'Elysia Vue Query' },
 
     nav: [
-      { text: 'Guide', link: '/guide/getting-started' },
-      { text: 'API', link: '/api/core' },
-      {
-        text: 'Ecosystem',
-        items: [
-          { text: 'Elysia', link: 'https://elysiajs.com' },
-          { text: 'Eden Treaty', link: 'https://elysiajs.com/eden/treaty/overview' },
-          { text: 'TanStack Vue Query', link: 'https://tanstack.com/query/latest/docs/vue/overview' },
-          { text: 'Vue.js', link: 'https://vuejs.org' },
-        ],
-      },
+      { text: 'Guide', link: '/guide/getting-started', activeMatch: '/guide/' },
       { text: 'Playground', link: '/playground' },
+      { text: 'API', link: '/api/vue', activeMatch: '/api/' },
     ],
 
     sidebar: {
       '/guide/': [
         {
-          text: 'Introduction',
+          text: 'Start Here',
           items: [
-            { text: 'Why elysia-vue-query?', link: '/guide/why' },
-            { text: 'Getting Started', link: '/guide/getting-started' },
+            { text: 'Why Elysia Vue Query?', link: '/guide/why' },
             { text: 'Installation', link: '/guide/installation' },
+            { text: 'Getting Started', link: '/guide/getting-started' },
           ],
         },
         {
-          text: 'Core Concepts',
+          text: 'Core Workflow',
           items: [
-            { text: 'Query Keys', link: '/guide/query-keys' },
             { text: 'Queries', link: '/guide/queries' },
             { text: 'Mutations', link: '/guide/mutations' },
-            { text: 'Cache Invalidation', link: '/guide/cache-invalidation' },
-            { text: 'SSR & Prefetching', link: '/guide/ssr' },
+            { text: 'Query Keys', link: '/guide/query-keys' },
           ],
         },
         {
           text: 'Advanced',
           items: [
-            { text: 'Serialization', link: '/guide/serialization' },
+            { text: 'Cache Invalidation', link: '/guide/cache-invalidation' },
             { text: 'Custom Key Patterns', link: '/guide/custom-keys' },
+            { text: 'Serialization', link: '/guide/serialization' },
+          ],
+        },
+        {
+          text: 'SSR',
+          items: [
+            { text: 'SSR & Prefetching', link: '/guide/ssr' },
+            { text: 'Nuxt Module', link: '/guide/nuxt-ssr' },
+          ],
+        },
+        {
+          text: 'Examples',
+          items: [
+            { text: 'Playground', link: '/playground' },
           ],
         },
       ],
@@ -66,8 +107,8 @@ export default defineConfig({
         {
           text: 'API Reference',
           items: [
-            { text: 'Core', link: '/api/core' },
             { text: 'Vue Helpers', link: '/api/vue' },
+            { text: 'Core', link: '/api/core' },
             { text: 'Types', link: '/api/types' },
           ],
         },
@@ -75,21 +116,27 @@ export default defineConfig({
     },
 
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/elysia-vue-query/elysia-vue-query' },
+      { icon: 'github', link: 'https://github.com/shiina/elysia-vue-query' },
+      { icon: 'npm', link: 'https://www.npmjs.com/package/@elysia-vue-query/' },
     ],
-
-    editLink: {
-      pattern: 'https://github.com/elysia-vue-query/elysia-vue-query/edit/main/docs/:path',
-      text: 'Suggest changes to this page',
-    },
 
     search: {
       provider: 'local',
     },
 
+    editLink: {
+      pattern: 'https://github.com/shiina/elysia-vue-query/edit/main/docs/:path',
+      text: 'Suggest changes to this page',
+    },
+
     footer: {
       message: 'Released under the MIT License.',
-      copyright: 'Made by Saku Shiina',
+      copyright: 'Copyright © 2026 Saku Shiina',
+    },
+
+    outline: {
+      level: [2, 3],
+      label: 'On this page',
     },
   },
 })

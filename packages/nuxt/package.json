@@ -1,8 +1,18 @@
 {
   "name": "@elysia-vue-query/nuxt",
   "version": "0.1.0",
-  "description": "Nuxt module for elysia-vue-query with SSR dehydration/hydration",
-  "repository": "elysia-vue-query/elysia-vue-query",
+  "description": "Nuxt module for elysia-vue-query — zero-config SSR dehydration and hydration",
+  "homepage": "https://elysia-vue.pages.dev/guide/nuxt-ssr",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/elysia-vue-query/elysia-vue-query.git",
+    "directory": "packages/nuxt"
+  },
+  "keywords": ["elysia", "eden", "nuxt", "nuxt-module", "tanstack-query", "vue-query", "ssr", "typescript"],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "license": "MIT",
   "type": "module",
   "exports": {
@@ -37,8 +47,8 @@
     "@elysia-vue-query/vue": "workspace:*"
   },
   "peerDependencies": {
-    "@tanstack/vue-query": ">=5.0.0",
-    "nuxt": ">=3.0.0"
+    "@tanstack/vue-query": "^5",
+    "nuxt": "^4"
   },
   "devDependencies": {
     "@nuxt/devtools": "^3.2.2",

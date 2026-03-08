@@ -1,71 +1,113 @@
 # Queries
 
-`eden.useQuery()` wraps TanStack's `useQuery`. You pass it an endpoint, and it handles the key and the response unwrapping.
+`eden.useQuery()` wraps TanStack's `useQuery` and fills in the two parts that are easy to get wrong by hand: the query key and the request function.
 
-## Basic usage
+## Basic read
 
-```vue
+```vue [UserList.vue]
 <script setup lang="ts">
 import { eden } from '../lib/eden'
 
 const { data: users, isLoading, error } = eden.useQuery(eden.proxy.users.get)
-// data type is inferred from your Elysia endpoint definition
 </script>
-
-<template>
-  <div v-if="isLoading">Loading...</div>
-  <div v-else-if="error">{{ error.message }}</div>
-  <ul v-else>
-    <li v-for="user in users" :key="user.id">{{ user.name }}</li>
-  </ul>
-</template>
 ```
 
-## Parameters
+That single line gives you:
 
-Call the endpoint to pass params. They become part of the query key:
+- a deterministic query key derived from the endpoint path
+- Eden response unwrapping
+- inferred success and error types
+
+## Parameterized queries
+
+Call the endpoint with params when the request needs them.
 
 ```ts
-const { data } = eden.useQuery(
-  eden.proxy.users.get({ page: 1, limit: 20 })
+const users = eden.useQuery(
+  eden.proxy.users.get({ page: 1, limit: 20 }),
 )
-// key: [Symbol, 'users', { limit: 20, page: 1 }, 'get']
 ```
 
-## TanStack options
+The params participate in the query key after stable serialization, so `{ limit: 20, page: 1 }` and `{ page: 1, limit: 20 }` produce the same key.
 
-Everything except `queryKey` and `queryFn` is passed through:
+## Reactive params
+
+Refs can be embedded directly in the proxy access path. When the ref changes, the query recomputes.
+
+```vue [UserProfile.vue]
+<script setup lang="ts">
+import { ref } from 'vue'
+import { eden } from '../lib/eden'
+
+const userId = ref('123')
+const profile = eden.useQuery(eden.proxy.users[userId].profile.get)
+</script>
+```
+
+This is especially useful for route params, tab state, or controlled filters.
+
+## TanStack options still apply
+
+You keep the normal TanStack Query controls. Only `queryKey` and `queryFn` are reserved internally.
 
 ```ts
-const { data } = eden.useQuery(eden.proxy.users.get, {
+const users = eden.useQuery(eden.proxy.users.get, {
   staleTime: 5 * 60 * 1000,
+  retry: 2,
+  gcTime: 10 * 60 * 1000,
   refetchOnWindowFocus: false,
-  enabled: isAuthenticated.value,
-  retry: 3,
 })
 ```
 
-## What happens to Eden's response
+## Conditional queries
 
-Eden returns `{ data, error, status }`. You never see this — the adapter unwraps it:
+Use `enabled` exactly as you would with raw TanStack Query.
 
-- Success → `data` is returned to TanStack as the query result
-- Failure (`error !== null`) → the error is thrown, landing in the `error` ref
-
-## Dependent queries
-
-Standard Vue Query patterns work:
-
-```vue
+```vue [UserPosts.vue]
 <script setup lang="ts">
 import { computed } from 'vue'
 import { eden } from '../lib/eden'
 
-const { data: user } = eden.useQuery(eden.proxy.users({ id: '1' }).get)
+const selectedUserId = computed(() => '1')
 
-const { data: posts } = eden.useQuery(
-  eden.proxy.users({ id: '1' }).posts.get,
-  { enabled: computed(() => !!user.value) }
+const posts = eden.useQuery(
+  eden.proxy.users[selectedUserId].posts.get,
+  { enabled: computed(() => !!selectedUserId.value) },
 )
 </script>
 ```
+
+## Placeholder and polling patterns
+
+```ts
+eden.useQuery(eden.proxy.users.get, {
+  placeholderData: (previousData) => previousData,
+})
+
+eden.useQuery(eden.proxy.stats.get, {
+  refetchInterval: 5_000,
+})
+```
+
+## Type inspection example
+
+```ts twoslash
+interface User {
+  id: number
+  name: string
+}
+
+declare const result: {
+  data: { value: User[] | undefined }
+  error: { value: Error | null }
+}
+
+result.data.value
+//     ^?
+```
+
+The live docs can show hover info for these snippets. This is useful when you want to document inferred component types instead of manually restating them in prose.
+
+## Mental model
+
+Use `eden.useQuery()` when you want the runtime guarantees of TanStack Query and the type guarantees of Eden Treaty without writing the same request wrapper on every route.

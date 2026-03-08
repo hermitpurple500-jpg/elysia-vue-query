@@ -1,45 +1,56 @@
 <template>
-  <div class="shell">
-    <aside class="sidebar">
+  <div class="app-shell" style="min-height:100vh;background:#030712;">
+    <!-- Ambient blobs -->
+    <div style="position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0;">
+      <div style="position:absolute;top:-200px;left:-100px;width:500px;height:500px;background:radial-gradient(circle,rgba(52,211,153,0.055) 0%,transparent 70%);border-radius:50%;filter:blur(50px);" />
+      <div style="position:absolute;bottom:-200px;right:-100px;width:500px;height:500px;background:radial-gradient(circle,rgba(167,139,250,0.055) 0%,transparent 70%);border-radius:50%;filter:blur(50px);" />
+    </div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" style="z-index:10;">
       <div class="sidebar-brand">
-        <div class="sidebar-logo">e</div>
-        <span class="sidebar-title">elysia-vue-query</span>
+        <img src="/logo.svg" alt="elysia-vue-query" style="height:26px;width:auto;" />
+        <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;">
+          <span class="badge-green" style="font-size:0.6rem;">SSR ✓</span>
+          <span class="badge-amber" style="font-size:0.6rem;">Playground</span>
+        </div>
       </div>
 
-      <div class="sidebar-subtitle">Playground</div>
+      <nav style="flex:1;">
+        <NuxtLink to="/" class="sidebar-nav-item" :class="{ active: route.path === '/' }">
+          <span>⚡</span>
+          <span>Overview</span>
+        </NuxtLink>
+        <NuxtLink to="/users" class="sidebar-nav-item" :class="{ active: route.path === '/users' }">
+          <span>👤</span>
+          <span>Users</span>
+          <span v-if="usersCount !== null" class="sidebar-badge">{{ usersCount }}</span>
+        </NuxtLink>
+        <NuxtLink to="/posts" class="sidebar-nav-item" :class="{ active: route.path === '/posts' }">
+          <span>📝</span>
+          <span>Posts</span>
+          <span v-if="postsCount !== null" class="sidebar-badge">{{ postsCount }}</span>
+        </NuxtLink>
+      </nav>
 
-      <NuxtLink to="/" class="sidebar-link" :class="{ active: route.path === '/' }">
-        <span class="icon">⚡</span>
-        Overview
-      </NuxtLink>
-
-      <NuxtLink to="/users" class="sidebar-link" :class="{ active: route.path === '/users' }">
-        <span class="icon">👤</span>
-        Users
-        <span v-if="usersCount !== null" class="sidebar-badge">{{ usersCount }}</span>
-      </NuxtLink>
-
-      <NuxtLink to="/posts" class="sidebar-link" :class="{ active: route.path === '/posts' }">
-        <span class="icon">📝</span>
-        Posts
-        <span v-if="postsCount !== null" class="sidebar-badge">{{ postsCount }}</span>
-      </NuxtLink>
-
-      <div class="sidebar-footer">
-        <p class="sidebar-footer-text">
-          Powered by <strong>elysia-vue-query</strong><br>
-          Eden Treaty + TanStack Query
-        </p>
+      <div style="padding:1rem 1.25rem;border-top:1px solid rgba(255,255,255,0.06);">
+        <div style="font-size:0.68rem;color:rgba(255,255,255,0.2);line-height:1.6;">
+          <div style="font-weight:600;color:rgba(255,255,255,0.3);margin-bottom:0.25rem;">elysia-vue-query</div>
+          Eden Treaty + TanStack Query v5<br />
+          SSR dehydration via Nuxt plugin
+        </div>
       </div>
     </aside>
 
-    <main class="main">
+    <!-- Main -->
+    <main class="main-content" style="position:relative;z-index:1;">
       <NuxtPage />
     </main>
   </div>
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
 import { eden } from '~/composables/eden'
 
 const route = useRoute()

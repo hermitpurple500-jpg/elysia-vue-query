@@ -1,8 +1,8 @@
 # Cache Invalidation
 
-Mutations automatically invalidate their parent subtree. You can also invalidate manually.
+Mutations automatically invalidate their parent subtree. You can also trigger invalidation manually for fine-grained control.
 
-## Automatic (mutations)
+## Automatic Invalidation (Mutations)
 
 Every `eden.useMutation()` invalidates its parent segments when it succeeds:
 
@@ -14,24 +14,44 @@ eden.useMutation(eden.proxy.users.posts.post)
 // → invalidates [Symbol, 'users', 'posts']
 ```
 
-The invalidation key uses segments only — no method, no params. So `users.post` invalidates `users.get`, `users.get({page:1})`, and every other query under `users`.
+The invalidation key uses **segments only** — no method, no params. So `users.post` invalidates `users.get`, `users.get({page:1})`, and every other query under `users`.
 
-## Manual
+## Manual Invalidation
+
+Use `eden.invalidate()` for explicit cache busting:
 
 ```ts
-await eden.invalidate(eden.proxy.users)       // all user queries
-await eden.invalidate(eden.proxy.users.posts)  // just user posts
+// Invalidate all user queries
+await eden.invalidate(eden.proxy.users)
+
+// Invalidate just user posts
+await eden.invalidate(eden.proxy.users.posts)
 ```
 
-For SSR, pass a `queryClient` explicitly:
+For SSR contexts, pass a `queryClient` explicitly:
 
 ```ts
 await eden.invalidate(eden.proxy.users, queryClient)
 ```
 
-## Direct queryClient access
+## Cross-Route Invalidation
 
-Use `getKey()` when you need the raw key for queryClient operations:
+When a mutation on one route needs to bust the cache for a different route:
+
+```ts
+const createComment = eden.useMutation(eden.proxy.posts.comments.post)
+
+createComment.mutate(commentData, {
+  onSuccess: async () => {
+    // Also invalidate the posts list
+    await eden.invalidate(eden.proxy.posts)
+  },
+})
+```
+
+## Direct `queryClient` Access
+
+Use `getKey()` when you need the raw key for `queryClient` operations:
 
 ```ts
 const key = eden.getKey(eden.proxy.users.get)
@@ -49,3 +69,7 @@ import { buildPartialKey } from '@elysia-vue-query/core'
 const prefix = buildPartialKey('users')
 queryClient.invalidateQueries({ queryKey: prefix })
 ```
+
+::: info
+`invalidateQueries` marks matching queries as stale, triggering a refetch for any active ones. `removeQueries` deletes them from the cache entirely.
+:::

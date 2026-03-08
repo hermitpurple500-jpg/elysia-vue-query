@@ -15,11 +15,10 @@ import {
   buildMutationInvalidationKey,
   getRouteMeta,
   createEdenQueryProxy,
-  EDEN_ROUTE_SYMBOL,
 } from '@elysia-vue-query/core'
 import type { EdenQueryKey } from '@elysia-vue-query/core'
 import type { MaybeRef } from 'vue'
-import { toValue } from 'vue'
+import { isRef, computed } from 'vue'
 
 type EdenResponse<TData, TError> = {
   data: TData | null
@@ -88,49 +87,47 @@ export function createEdenQueryHelpers<TClient>(client: TClient): EdenQueryHelpe
     endpoint: TEndpoint | MaybeRef<TEndpoint>,
     options?: EdenUseQueryOptions<InferEdenData<TEndpoint>, InferEdenError<TEndpoint>>,
   ): UseQueryReturnType<InferEdenData<TEndpoint>, InferEdenError<TEndpoint>> {
-    const resolvedEndpoint = toValue(endpoint)
-    const meta = getRouteMeta(resolvedEndpoint)
-
-    if (!meta) {
-      throw new Error('Expected an eden-enhanced proxy. Did you pass a raw client method instead of eden.proxy.*?')
-    }
-
-    const queryKey = buildQueryKey(resolvedEndpoint)
-
     return tanstackUseQuery({
       ...options,
-      queryKey,
+      queryKey: computed(() => buildQueryKey(isRef(endpoint) ? endpoint.value : endpoint)),
       queryFn: async () => {
+        const resolvedEndpoint = isRef(endpoint) ? endpoint.value : endpoint
+        const meta = getRouteMeta(resolvedEndpoint)
+
+        if (!meta) {
+          throw new Error('Expected an eden-enhanced proxy. Did you pass a raw client method instead of eden.proxy.*?')
+        }
+
         const response = await (resolvedEndpoint as unknown as CallableEndpoint)()
         if (response.error !== null) throw response.error
         return response.data as InferEdenData<TEndpoint>
       },
-    } as UseQueryOptions<InferEdenData<TEndpoint>, InferEdenError<TEndpoint>>)
+    } as any) as UseQueryReturnType<InferEdenData<TEndpoint>, InferEdenError<TEndpoint>>
   }
 
   function useMutation<TEndpoint extends (...args: never[]) => Promise<EdenResponse<unknown, unknown>>>(
     endpoint: TEndpoint | MaybeRef<TEndpoint>,
     options?: EdenUseMutationOptions<InferEdenData<TEndpoint>, InferEdenError<TEndpoint>, InferEdenBody<TEndpoint>>,
   ): UseMutationReturnType<InferEdenData<TEndpoint>, InferEdenError<TEndpoint>, InferEdenBody<TEndpoint>, unknown> {
-    const resolvedEndpoint = toValue(endpoint)
-    const meta = getRouteMeta(resolvedEndpoint)
-
-    if (!meta) {
-      throw new Error('Expected an eden-enhanced proxy. Did you pass a raw client method instead of eden.proxy.*?')
-    }
-
-    const invalidationKey = buildMutationInvalidationKey(resolvedEndpoint)
     const qc = useQueryClient()
 
     return tanstackUseMutation({
       ...options,
       mutationFn: async (variables: InferEdenBody<TEndpoint>) => {
+        const resolvedEndpoint = isRef(endpoint) ? endpoint.value : endpoint
+        const meta = getRouteMeta(resolvedEndpoint)
+
+        if (!meta) {
+          throw new Error('Expected an eden-enhanced proxy. Did you pass a raw client method instead of eden.proxy.*?')
+        }
+
+        const invalidationKey = buildMutationInvalidationKey(resolvedEndpoint)
         const response = await (resolvedEndpoint as unknown as CallableEndpoint)(variables)
         if (response.error !== null) throw response.error
         void qc.invalidateQueries({ queryKey: invalidationKey })
         return response.data as InferEdenData<TEndpoint>
       },
-    } as UseMutationOptions<InferEdenData<TEndpoint>, InferEdenError<TEndpoint>, InferEdenBody<TEndpoint>>)
+    } as any) as UseMutationReturnType<InferEdenData<TEndpoint>, InferEdenError<TEndpoint>, InferEdenBody<TEndpoint>, unknown>
   }
 
   async function prefetch<TEndpoint extends (...args: never[]) => Promise<EdenResponse<unknown, unknown>>>(
@@ -167,7 +164,7 @@ export function createEdenQueryHelpers<TClient>(client: TClient): EdenQueryHelpe
       throw new Error('Expected an eden-enhanced proxy. Did you forget to wrap your client with createEdenQueryProxy?')
     }
 
-    const invalidationKey = [EDEN_ROUTE_SYMBOL, ...meta.segments] as const
+    const invalidationKey = buildMutationInvalidationKey(endpoint)
     await qc.invalidateQueries({ queryKey: invalidationKey })
   }
 

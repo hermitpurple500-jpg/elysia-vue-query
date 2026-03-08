@@ -1,62 +1,67 @@
 # Mutations
 
-`eden.useMutation()` wires up TanStack's `useMutation` and invalidates related queries after a successful call.
+`eden.useMutation()` keeps the TanStack mutation lifecycle but removes the manual request wrapper and the most common invalidation bookkeeping.
 
-## Basic usage
+## Basic write
 
-```vue
+```vue [CreateUser.vue]
 <script setup lang="ts">
 import { eden } from '../lib/eden'
 
 const createUser = eden.useMutation(eden.proxy.users.post)
 
-function handleSubmit() {
-  createUser.mutate({ name: 'Alice', email: 'alice@example.com' })
+function create() {
+  createUser.mutate({
+    name: 'Alice',
+    email: 'alice@example.com',
+  })
 }
 </script>
-
-<template>
-  <button @click="handleSubmit" :disabled="createUser.isPending.value">
-    {{ createUser.isPending.value ? 'Creating...' : 'Create User' }}
-  </button>
-  <p v-if="createUser.isError.value">{{ createUser.error.value?.message }}</p>
-</template>
 ```
 
-The mutation variable type (`{ name: string; email: string }`) comes straight from your Elysia body schema.
+The mutation variable type comes from the endpoint body type. The success result comes from the endpoint response type.
 
-## How invalidation works
+## Automatic subtree invalidation
 
-After a successful mutation, the library computes an invalidation key from the route segments (no method, no params):
-
-```
-eden.useMutation(eden.proxy.users.post)
-→ success → invalidateQueries({ queryKey: [Symbol, 'users'] })
-```
-
-That prefix matches every `users.*` query — `users.get`, `users.get({ page: 1 })`, etc. Active queries refetch automatically.
-
-You don't write the invalidation logic. You don't name the key. It just works because the mutation and the queries share the same route prefix.
-
-## Callbacks
-
-All TanStack mutation callbacks work (except `mutationFn`, which is managed):
+Successful writes invalidate the route subtree, not just the exact mutation key.
 
 ```ts
+eden.useMutation(eden.proxy.users.post)
+// success => invalidate [EDEN_ROUTE_SYMBOL, 'users']
+
+eden.useMutation(eden.proxy.users.posts.post)
+// success => invalidate [EDEN_ROUTE_SYMBOL, 'users', 'posts']
+```
+
+That means a `POST /users` invalidates reads like:
+
+- `eden.proxy.users.get`
+- `eden.proxy.users.get({ page: 1 })`
+- `eden.proxy.users['42'].profile.get`
+
+## Standard callbacks still work
+
+```ts
+const createUser = eden.useMutation(eden.proxy.users.post)
+
 createUser.mutate(
   { name: 'Alice', email: 'alice@example.com' },
   {
-    onSuccess: (data) => router.push(`/users/${data.id}`),
-    onError: (err) => toast.error(err.message),
-  }
+    onSuccess: (user) => {
+      console.log('created', user.id)
+    },
+    onError: (error) => {
+      console.error(error.message)
+    },
+  },
 )
 ```
 
 ## Optimistic updates
 
-Combine with queryClient for instant UI feedback:
+For optimistic UI, pair the helper with `useQueryClient()` just as you would in TanStack Query.
 
-```vue
+```vue [DeleteUser.vue]
 <script setup lang="ts">
 import { useQueryClient } from '@tanstack/vue-query'
 import { eden } from '../lib/eden'
@@ -65,19 +70,51 @@ const queryClient = useQueryClient()
 const usersKey = eden.getKey(eden.proxy.users.get)
 const deleteUser = eden.useMutation(eden.proxy.users.delete)
 
-function handleDelete(userId: number) {
+function remove(userId: number) {
   const previous = queryClient.getQueryData(usersKey)
-  queryClient.setQueryData(usersKey, (old: any[]) =>
-    old?.filter(u => u.id !== userId)
+
+  queryClient.setQueryData(usersKey, (old: Array<{ id: number }> = []) =>
+    old.filter((user) => user.id !== userId),
   )
+
   deleteUser.mutate(
     { id: userId },
-    { onError: () => queryClient.setQueryData(usersKey, previous) }
+    {
+      onError: () => queryClient.setQueryData(usersKey, previous),
+    },
   )
 }
 </script>
 ```
 
-## Response handling
+## Manual invalidation when routes differ
 
-Like queries, Eden's `{ data, error }` is unwrapped. The `data` from your endpoint is what shows up in `onSuccess`. If `error` is non-null, it's thrown and lands in `onError`.
+If a mutation on one route affects a different route family, call `eden.invalidate()` in `onSuccess`.
+
+```ts
+const createComment = eden.useMutation(eden.proxy.posts.comments.post)
+
+createComment.mutate(commentData, {
+  onSuccess: async () => {
+    await eden.invalidate(eden.proxy.posts)
+  },
+})
+```
+
+## Type inspection example
+
+```ts twoslash
+declare const createUser: {
+  mutate: (
+    variables: { name: string; email: string },
+    options?: {
+      onSuccess?: (data: { id: number; name: string; email: string }) => void
+    },
+  ) => void
+}
+
+createUser.mutate
+//         ^?
+```
+
+The docs use this format to make the mutation surface inspectable without leaving the browser.

@@ -1,31 +1,42 @@
 # Serialization
 
-TanStack Query matches keys with structural equality, so `{ z: 1, a: 2 }` and `{ a: 2, z: 1 }` produce different cache entries. elysia-vue-query solves this by sorting object keys deterministically before they become part of a query key.
+Params become part of the query key, so they need a deterministic representation.
 
-You don't need to do anything — this happens automatically.
-
-## `stableSerialize()`
-
-Sorts keys alphabetically, strips `undefined` properties, and recurses into nested objects and arrays.
+## What `stableSerialize()` does
 
 ```ts
 import { stableSerialize } from '@elysia-vue-query/core'
 
-stableSerialize({ z: 1, a: 2 })           // → { a: 2, z: 1 }
-stableSerialize({ b: 1, a: undefined })    // → { b: 1 }
-stableSerialize({ n: { c: 3, a: 1 } })    // → { n: { a: 1, c: 3 } }
+stableSerialize({ z: 1, a: 2 })
+// => { a: 2, z: 1 }
+
+stableSerialize({ b: 1, a: undefined })
+// => { b: 1 }
 ```
 
-## What's allowed
+## Rules
 
-Primitives (`string`, `number`, `boolean`, `null`), plain objects, and arrays pass through. `undefined` is stripped from object properties.
+- plain object keys are sorted recursively
+- arrays keep their order
+- `undefined` fields inside objects are removed
+- `string`, `number`, `boolean`, and `null` pass through
 
-`Date`, `Set`, `Map`, and `Function` all throw a `TypeError` — convert them to primitives first:
+## Unsupported values
+
+These throw at key-construction time:
+
+- `Date`
+- `Set`
+- `Map`
+- functions
 
 ```ts
 stableSerialize(new Date())
-// TypeError: Cannot serialize value of type Date for query key.
-//   Convert to a primitive (e.g., .toISOString()) before passing.
+// TypeError: Non-serializable value at "root": [object Date]
 ```
 
-These errors fire at key-construction time, not when the query runs, so you catch them early.
+Convert those values to primitives before passing them as route params.
+
+```ts
+eden.proxy.logs.get({ since: new Date().toISOString() })
+```

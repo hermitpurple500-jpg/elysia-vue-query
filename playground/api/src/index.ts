@@ -32,6 +32,11 @@ const posts: Post[] = [
 
 const app = new Elysia()
   .use(cors())
+  .derive(async () => {
+    // Add artificial delay to simulate real-world latency (500ms)
+    await new Promise((resolve) => setTimeout(resolve, 500))
+    return {}
+  })
   .get('/users', () => users, {
     response: t.Array(t.Object({
       id: t.Number(),
@@ -57,6 +62,19 @@ const app = new Elysia()
     users.push(user)
     return user
   }, {
+    body: t.Object({
+      name: t.String(),
+      email: t.String({ format: 'email' }),
+    }),
+  })
+  .put('/users/:id', ({ params, body }) => {
+    const user = users.find((u) => u.id === Number(params.id))
+    if (!user) throw new Error('User not found')
+    user.name = body.name
+    user.email = body.email
+    return user
+  }, {
+    params: t.Object({ id: t.String() }),
     body: t.Object({
       name: t.String(),
       email: t.String({ format: 'email' }),
@@ -98,6 +116,27 @@ const app = new Elysia()
       title: t.String(),
       body: t.String(),
     }),
+  })
+  .put('/posts/:id', ({ params, body }) => {
+    const post = posts.find((p) => p.id === Number(params.id))
+    if (!post) throw new Error('Post not found')
+    post.title = body.title
+    post.body = body.body
+    return post
+  }, {
+    params: t.Object({ id: t.String() }),
+    body: t.Object({
+      title: t.String(),
+      body: t.String(),
+    }),
+  })
+  .delete('/posts/:id', ({ params }) => {
+    const index = posts.findIndex((p) => p.id === Number(params.id))
+    if (index === -1) throw new Error('Post not found')
+    const deleted = posts.splice(index, 1)[0]!
+    return deleted
+  }, {
+    params: t.Object({ id: t.String() }),
   })
   .listen(3000)
 

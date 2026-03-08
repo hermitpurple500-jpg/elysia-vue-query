@@ -1,0 +1,193 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', monospace;
+  --color-bg: #030712;
+  --color-surface: oklch(1 0 0 / 0.03);
+  --color-border: oklch(1 0 0 / 0.07);
+}
+
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background-color: #030712;
+    color: #f1f5f9;
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+  }
+
+  code, pre, kbd, samp {
+    font-family: var(--font-mono);
+  }
+
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgb(255 255 255 / 0.1); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgb(255 255 255 / 0.18); }
+}
+
+@layer components {
+  .glass {
+    background: rgb(255 255 255 / 0.03);
+    border: 1px solid rgb(255 255 255 / 0.07);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: 12px;
+  }
+
+  .glass-sm {
+    background: rgb(255 255 255 / 0.04);
+    border: 1px solid rgb(255 255 255 / 0.08);
+    border-radius: 8px;
+  }
+
+  .badge-green {
+    font-size: 0.68rem;
+    font-weight: 600;
+    padding: 0.2rem 0.6rem;
+    border-radius: 9999px;
+    background: rgb(52 211 153 / 0.12);
+    color: #34d399;
+    border: 1px solid rgb(52 211 153 / 0.2);
+    letter-spacing: 0.01em;
+  }
+
+  .badge-purple {
+    font-size: 0.68rem;
+    font-weight: 600;
+    padding: 0.2rem 0.6rem;
+    border-radius: 9999px;
+    background: rgb(167 139 250 / 0.12);
+    color: #a78bfa;
+    border: 1px solid rgb(167 139 250 / 0.2);
+    letter-spacing: 0.01em;
+  }
+
+  .badge-blue {
+    font-size: 0.68rem;
+    font-weight: 600;
+    padding: 0.2rem 0.6rem;
+    border-radius: 9999px;
+    background: rgb(96 165 250 / 0.12);
+    color: #60a5fa;
+    border: 1px solid rgb(96 165 250 / 0.2);
+    letter-spacing: 0.01em;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    font-family: var(--font-sans);
+    cursor: pointer;
+    transition: opacity 0.15s, transform 0.1s;
+    box-shadow: 0 0 20px rgb(16 185 129 / 0.25);
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    opacity: 0.9;
+    transform: translateY(-1px);
+  }
+
+  .btn-primary:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+  }
+
+  .btn-danger {
+    background: rgb(239 68 68 / 0.1);
+    color: #f87171;
+    border: 1px solid rgb(239 68 68 / 0.15);
+    border-radius: 6px;
+    padding: 0.25rem 0.6rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    font-family: var(--font-sans);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .btn-danger:hover:not(:disabled) {
+    background: rgb(239 68 68 / 0.18);
+    border-color: rgb(239 68 68 / 0.3);
+  }
+
+  .btn-danger:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  .form-input {
+    width: 100%;
+    background: rgb(255 255 255 / 0.04);
+    border: 1px solid rgb(255 255 255 / 0.08);
+    border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+    color: #f1f5f9;
+    font-size: 0.82rem;
+    font-family: var(--font-sans);
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+
+  .form-input::placeholder {
+    color: rgb(255 255 255 / 0.2);
+  }
+
+  .form-input:focus {
+    border-color: rgb(52 211 153 / 0.5);
+    box-shadow: 0 0 0 3px rgb(52 211 153 / 0.08);
+  }
+
+  .form-input:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .form-label {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: rgb(255 255 255 / 0.35);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.35rem;
+  }
+
+  .spinner {
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgb(52 211 153 / 0.2);
+    border-top-color: #34d399;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    flex-shrink: 0;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .pulse-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #34d399;
+    animation: pulse-scale 1.4s ease-in-out infinite;
+  }
+
+  @keyframes pulse-scale {
+    0%, 100% { opacity: 0.4; transform: scale(0.9); }
+    50% { opacity: 1; transform: scale(1); }
+  }
+}
