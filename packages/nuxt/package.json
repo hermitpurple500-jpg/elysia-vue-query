@@ -43,30 +43,30 @@
   "scripts": {
     "build": "nuxt-module-build build",
     "prepack": "nuxt-module-build build",
-    "dev": "bun run dev:prepare && nuxt dev ../../playground/nuxt-app",
+    "dev": "pnpm run dev:prepare && nuxt dev ../../playground/nuxt-app",
     "dev:build": "nuxt build ../../playground/nuxt-app",
     "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxt prepare ../../playground/nuxt-app",
-    "release": "bun run lint && bun run prepack && changelogen --release && bun publish && git push --follow-tags",
     "lint": "eslint .",
     "test:types": "vue-tsc --noEmit"
   },
   "dependencies": {
     "@elysia-vue-query/vue": "^1",
-    "@nuxt/kit": "^4.3.1"
+    "@nuxt/kit": "^4.4.2"
   },
   "devDependencies": {
     "@nuxt/devtools": "^3.2.3",
     "@nuxt/eslint-config": "^1.15.2",
     "@nuxt/module-builder": "^1.0.2",
-    "@nuxt/schema": "^4.3.1",
+    "@nuxt/schema": "^4.4.2",
     "@nuxt/test-utils": "^4.0.0",
     "@tanstack/vue-query": "^5.92.9",
     "@types/node": "latest",
     "changelogen": "^0.6.2",
     "eslint": "^10.0.3",
-    "nuxt": "^4.3.1",
+    "nuxt": "^4.4.2",
     "typescript": "~5.9.3",
-    "vitest": "^4.0.18",
+    "vite-plus": "catalog:",
+    "vitest": "catalog:",
     "vue-tsc": "^3.2.5"
   },
   "peerDependencies": {

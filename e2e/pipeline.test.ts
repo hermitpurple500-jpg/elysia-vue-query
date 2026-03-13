@@ -1,11 +1,10 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect } from "vite-plus/test";
 import {
   createEdenQueryProxy,
   buildQueryKey,
   buildMutationInvalidationKey,
   getRouteMeta,
   EDEN_ROUTE_SYMBOL,
-  stableSerialize,
 } from "@elysia-vue-query/core";
 
 /**
@@ -48,7 +47,7 @@ function createMockClient() {
         },
       }),
       {
-        get: (params?: Record<string, unknown>) =>
+        get: (_params?: Record<string, unknown>) =>
           Promise.resolve({ data: users, error: null, status: 200 }),
         post: (body: { name: string; email: string }) => {
           const user = { id: users.length + 1, ...body };

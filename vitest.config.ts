@@ -1,20 +1,16 @@
 import { fileURLToPath } from "node:url";
-import { defineConfig } from "vitest/config";
+import { defineConfig } from "vite-plus";
+
+const alias = {
+  "@elysia-vue-query/core": fileURLToPath(new URL("./packages/core/src/index.ts", import.meta.url)),
+  "@elysia-vue-query/vue": fileURLToPath(new URL("./packages/vue/src/index.ts", import.meta.url)),
+};
 
 export default defineConfig({
-  resolve: {
-    alias: {
-      "@elysia-vue-query/core": fileURLToPath(
-        new URL("./packages/core/src/index.ts", import.meta.url),
-      ),
-      "@elysia-vue-query/vue": fileURLToPath(
-        new URL("./packages/vue/src/index.ts", import.meta.url),
-      ),
-    },
-  },
   test: {
     projects: [
       {
+        resolve: { alias },
         test: {
           name: "unit",
           include: ["packages/*/src/**/*.test.ts"],
@@ -26,16 +22,7 @@ export default defineConfig({
         },
       },
       {
-        resolve: {
-          alias: {
-            "@elysia-vue-query/core": fileURLToPath(
-              new URL("./packages/core/src/index.ts", import.meta.url),
-            ),
-            "@elysia-vue-query/vue": fileURLToPath(
-              new URL("./packages/vue/src/index.ts", import.meta.url),
-            ),
-          },
-        },
+        resolve: { alias },
         test: {
           name: "e2e",
           include: ["e2e/**/*.test.ts"],

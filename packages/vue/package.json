@@ -43,16 +43,16 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsdown",
-    "dev": "tsdown --watch"
+    "build": "vp pack",
+    "dev": "vp pack --watch"
   },
   "dependencies": {
     "@elysia-vue-query/core": "^1.1.0"
   },
   "devDependencies": {
     "@tanstack/vue-query": "^5.92.9",
-    "tsdown": "^0.21.1",
     "typescript": "^5.9.3",
+    "vite-plus": "catalog:",
     "vue": "^3.5.30"
   },
   "peerDependencies": {

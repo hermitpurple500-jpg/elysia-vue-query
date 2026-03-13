@@ -1,4 +1,4 @@
-import { describe, it, expect, expectTypeOf } from "vitest";
+import { describe, it, expect, expectTypeOf } from "vite-plus/test";
 import { createEdenQueryProxy, getRouteMeta } from "../proxy";
 import { EDEN_ROUTE_SYMBOL } from "../index";
 import type { RouteMeta } from "../types";

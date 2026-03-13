@@ -1,5 +1,6 @@
 import { Elysia, t } from "elysia";
 import { cors } from "@elysiajs/cors";
+import { node } from "@elysiajs/node";
 
 interface User {
   id: number;
@@ -45,7 +46,7 @@ const posts: Post[] = [
   },
 ];
 
-const app = new Elysia()
+const app = new Elysia({ adapter: node() })
   .use(cors())
   .derive(async () => {
     // Add artificial delay to simulate real-world latency (500ms)
@@ -193,4 +194,4 @@ const app = new Elysia()
 
 export type App = typeof app;
 
-console.log(`🦊 Elysia playground API running at http://localhost:${app.server!.port}`);
+console.log(`🦊 Elysia playground API running at http://localhost:3000`);

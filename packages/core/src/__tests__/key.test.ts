@@ -1,4 +1,4 @@
-import { describe, it, expect, expectTypeOf } from "vitest";
+import { describe, it, expect, expectTypeOf } from "vite-plus/test";
 import { buildQueryKey, buildMutationInvalidationKey, buildPartialKey } from "../key";
 import { createEdenQueryProxy } from "../proxy";
 import { EDEN_ROUTE_SYMBOL } from "../index";
